@@ -31,7 +31,7 @@ if (-not $Inner) {
     $self = Join-Path $PSScriptRoot "run_local_e2e.ps1"
     $innerCommand = "pwsh -NoProfile -File `"$self`" -Inner"
     if ($Tests) { $innerCommand += " -Tests `"$Tests`"" }
-    python $FleetScript run-suite $Key -- $innerCommand
+    python $FleetScript run-suite $Key: $innerCommand
     exit $LASTEXITCODE
 }
 

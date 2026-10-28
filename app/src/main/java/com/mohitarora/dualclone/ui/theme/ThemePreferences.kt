@@ -25,7 +25,12 @@ enum class ThemePreset(
     CRIMSON_RED(R.string.theme_preset_red, Color(0xFFE53935)),
     OCEAN_CYAN(R.string.theme_preset_cyan, Color(0xFF00ACC1)),
     FOREST_GREEN(R.string.theme_preset_green, Color(0xFF388E3C)),
-    CUSTOM(R.string.theme_preset_custom, Color(DEFAULT_CUSTOM_HEX))
+    CUSTOM(R.string.theme_preset_custom, Color(DEFAULT_CUSTOM_HEX));
+
+    companion object {
+        // NOTE: Blue first, because a wallpaper accent can be a pale or muddy color. Wallpaper stays one tap away in the row.
+        val DEFAULT = ONE_UI_BLUE
+    }
 }
 
 enum class ThemeMode(@StringRes val labelRes: Int) {
@@ -35,7 +40,7 @@ enum class ThemeMode(@StringRes val labelRes: Int) {
 }
 
 data class ThemeConfig(
-    val preset: ThemePreset = ThemePreset.DYNAMIC_MONET,
+    val preset: ThemePreset = ThemePreset.DEFAULT,
     val isPureBlack: Boolean = false,
     val customColorHex: Long = DEFAULT_CUSTOM_HEX,
     val mode: ThemeMode = ThemeMode.SYSTEM
@@ -54,8 +59,8 @@ class ThemePreferences(context: Context) {
 
     private fun loadConfig(): ThemeConfig {
         val preset = runCatching {
-            ThemePreset.valueOf(prefs.getString(KEY_PRESET, null) ?: ThemePreset.DYNAMIC_MONET.name)
-        }.getOrDefault(ThemePreset.DYNAMIC_MONET)
+            ThemePreset.valueOf(prefs.getString(KEY_PRESET, null) ?: ThemePreset.DEFAULT.name)
+        }.getOrDefault(ThemePreset.DEFAULT)
         val mode = runCatching {
             ThemeMode.valueOf(prefs.getString(KEY_MODE, null) ?: ThemeMode.SYSTEM.name)
         }.getOrDefault(ThemeMode.SYSTEM)

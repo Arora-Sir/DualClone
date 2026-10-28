@@ -71,6 +71,7 @@ fun AppearanceSection(
     }
     val dots = layout.quick.map { cellFor(it) }
     val extra = if (theme.preset !in layout.quick) cellFor(theme.preset) else null
+    val selectedName = (dots + listOfNotNull(extra)).firstOrNull { it.id == theme.preset.name }?.label.orEmpty()
 
     DcSettingsGroup(header = stringResource(R.string.settings_section_appearance), modifier = modifier) {
         Column(modifier = Modifier.padding(DcSpacing.lg)) {
@@ -91,7 +92,7 @@ fun AppearanceSection(
         DcSettingsDivider()
         Column(modifier = Modifier.padding(DcSpacing.lg)) {
             Text(
-                text = stringResource(R.string.appearance_palette_title),
+                text = stringResource(R.string.appearance_palette_title_selected, selectedName),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .semantics { heading() }

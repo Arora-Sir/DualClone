@@ -10,6 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.1] - 2026-10-28
+
+### Changed
+* New installs start with the Blue accent instead of the wallpaper color. Existing choices are kept.
+* The Settings title shows the selected color, for example Color palette: Blue. The preset formerly called One UI is now called Blue.
+* Build tooling updated (KSP 2.3.12). Dependency update pull requests are now grouped monthly and skip major versions.
+
+---
+
 ## [1.0.0] - 2026-10-28
 
 ### Added

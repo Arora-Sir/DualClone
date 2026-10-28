@@ -17,7 +17,7 @@
     <!-- Theme -->
     <string name="theme_preset_wallpaper">Wallpaper</string>
     <string name="theme_preset_default">Default</string>
-    <string name="theme_preset_one_ui">One UI</string>
+    <string name="theme_preset_one_ui">Blue</string>
     <string name="theme_preset_orange">Orange</string>
     <string name="theme_preset_emerald">Emerald</string>
     <string name="theme_preset_purple">Purple</string>
@@ -57,6 +57,7 @@
 
     <string name="appearance_mode_title">Theme mode</string>
     <string name="appearance_palette_title">Color palette</string>
+<string name="appearance_palette_title_selected">Color palette: %1$s</string>
     <string name="appearance_amoled_title">Pure AMOLED black</string>
     <string name="appearance_amoled_summary">True black backgrounds for OLED displays</string>
     <string name="appearance_amoled_disabled">Available in dark mode only</string>

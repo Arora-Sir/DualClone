@@ -159,7 +159,7 @@ python scripts/device/ghost_probe.py --serial <serial> refresh-launcher
 python scripts/device/comprehensive_screen_audit.py --serial <serial> --output-dir .e2e/audit
 ```
 
-Captures every screen, sheet and dialog for visual review. Output stays in the gitignored `.e2e` folder. Never publish captures from a personal device. README screenshots use demo data, see [docs/screenshots/README.md](docs/screenshots/README.md).
+Captures every screen, sheet and dialog for visual review. Output stays in the gitignored `.e2e` folder. Never publish captures from a personal device. README screenshots use demo data, see the README screenshots section of [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Regenerate icons
 

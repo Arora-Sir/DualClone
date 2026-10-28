@@ -10,7 +10,7 @@ Clone any installed app into Samsung Dual Messenger or a work profile with one t
 
 [Download the latest APK](https://github.com/Arora-Sir/DualClone/releases/latest) | [Subscribe in Obtainium](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.mohitarora.dualclone%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FArora-Sir%2FDualClone%22%2C%22author%22%3A%22Arora-Sir%22%2C%22name%22%3A%22DualClone%22%7D) | [Report an issue](https://github.com/Arora-Sir/DualClone/issues/new/choose)
 
-<!-- Screenshots use demo data only. See docs/screenshots/README.md for how to capture them. -->
+<!-- Screenshots use demo data only. See the README screenshots section of CONTRIBUTING.md. -->
 <p>
   <img src="docs/screenshots/home.png" alt="Home screen showing the cloned apps in Dual Messenger with the profile selector" width="240">
   <img src="docs/screenshots/settings.png" alt="Grouped settings page with theme mode, color palette and Pure AMOLED black" width="240">
@@ -115,8 +115,7 @@ See [SETUP.md](SETUP.md). Contributions are welcome, read [CONTRIBUTING.md](CONT
 
 ## Documentation
 
-* [ARCHITECTURE.md](ARCHITECTURE.md) explains the layers and the Shizuku command path.
-* [CONTEXT.md](CONTEXT.md) explains the Samsung multi-user background.
+* [ARCHITECTURE.md](ARCHITECTURE.md) explains the layers, the Shizuku command path and the Samsung multi-user background.
 * [SETUP.md](SETUP.md) covers building and device testing.
 * [docs/RELEASING.md](docs/RELEASING.md) covers signing and releasing, and [docs/UPDATES.md](docs/UPDATES.md) covers how users get updates.
 * [CHANGELOG.md](CHANGELOG.md) lists changes.

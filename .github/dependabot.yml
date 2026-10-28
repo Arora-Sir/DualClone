@@ -3,10 +3,17 @@ updates:
   - package-ecosystem: gradle
     directory: /
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      minor-and-patch:
+        update-types: [ minor, patch ]
+    ignore:
+      # NOTE: Major jumps such as AGP 9 or a new compileSdk need a planned migration, not an automatic pull request.
+      - dependency-name: "*"
+        update-types: [ "version-update:semver-major" ]
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
+      interval: monthly
+    open-pull-requests-limit: 3
