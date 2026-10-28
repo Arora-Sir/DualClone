@@ -1,5 +1,8 @@
 package com.mohitarora.dualclone.ui.components
 
+import androidx.compose.ui.draw.alpha
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.snap
@@ -42,8 +45,11 @@ fun SegmentedFilterBar(
     totalCount: Int,
     installedCount: Int,
     clonedCount: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    countsReady: Boolean = true
 ) {
+    // NOTE: Counts fade in once the first load is done, so a cold start never shows a frame of zeros.
+    val countAlpha by animateFloatAsState(if (countsReady) 1f else 0f, label = "countAlpha")
     val tabs = listOf(
         Triple(FilterTab.ALL, R.string.tab_all, totalCount),
         Triple(FilterTab.INSTALLED, R.string.tab_installed, installedCount),
@@ -87,7 +93,8 @@ fun SegmentedFilterBar(
                                 Text(
                                     text = value.toString(),
                                     style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1
+                                    maxLines = 1,
+                                    modifier = Modifier.alpha(countAlpha)
                                 )
                             }
                         }

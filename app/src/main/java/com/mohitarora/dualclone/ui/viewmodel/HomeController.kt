@@ -162,6 +162,8 @@ class HomeController(
         scope.launch {
             if (catalog.isEmpty()) catalog.refresh()
             catalogLoaded.value = true
+            // NOTE: Package events only arrive while the app runs, so apps installed or removed in between need this pass on every start.
+            catalog.refresh()
         }
     }
 
@@ -206,6 +208,7 @@ class HomeController(
         scope.launch {
             refreshing.value = true
             try {
+                catalog.refresh()
                 val report = reconciler.run()
                 events.send(UiEvent(if (report.ok) Messages.reconcileDone() else Messages.reconcileFailed()))
             } finally {

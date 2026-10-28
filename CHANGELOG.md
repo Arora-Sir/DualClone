@@ -10,6 +10,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.2] - 2026-10-29
+
+### Fixed
+* Apps installed or removed while DualClone was closed never showed up or disappeared in the list. The app list now refreshes on every start and with the manual refresh.
+* Messages such as Cloned to Dual Messenger drew as a light bar in dark mode. Snackbars now follow the theme in light, dark and Pure black.
+* The filter tabs flashed zero counts for one frame at startup. The counts now fade in once the list has loaded.
+
+---
+
 ## [1.0.1] - 2026-10-28
 
 ### Changed

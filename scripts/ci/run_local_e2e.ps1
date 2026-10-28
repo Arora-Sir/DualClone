@@ -31,7 +31,9 @@ if (-not $Inner) {
     $self = Join-Path $PSScriptRoot "run_local_e2e.ps1"
     $innerCommand = "pwsh -NoProfile -File `"$self`" -Inner"
     if ($Tests) { $innerCommand += " -Tests `"$Tests`"" }
-    python $FleetScript run-suite $Key: $innerCommand
+    # NOTE: The fleet wrapper needs a literal double hyphen before the command. It is built from characters so the punctuation cleaner cannot rewrite it.
+    $separator = [string][char]45 * 2
+    python $FleetScript run-suite $Key $separator $innerCommand
     exit $LASTEXITCODE
 }
 
@@ -49,6 +51,18 @@ while ((Get-Date) -lt $deadline) {
     Start-Sleep -Seconds 3
 }
 if ((Invoke-DeviceAdb shell getprop sys.boot_completed 2>$null).Trim() -ne "1") { throw "Emulator $serial did not finish booting within 4 minutes." }
+
+# NOTE: Ensure user 0 is unlocked. If a test PIN was set, unlock or clear it with standard PIN 1234.
+if ((Invoke-DeviceAdb shell dumpsys user 2>$null) -match "RUNNING_LOCKED") {
+    Invoke-DeviceAdb shell input keyevent KEYCODE_WAKEUP
+    Invoke-DeviceAdb shell wm dismiss-keyguard
+    Invoke-DeviceAdb shell input text 1234
+    Invoke-DeviceAdb shell input keyevent 66
+    Start-Sleep -Seconds 2
+    if ((Invoke-DeviceAdb shell dumpsys user 2>$null) -match "RUNNING_LOCKED") {
+        Invoke-DeviceAdb shell locksettings clear --old 1234
+    }
+}
 
 # NOTE: A run that was killed leaves its profile behind, and Android refuses a second managed profile on the same user.
 foreach ($line in (Invoke-DeviceAdb shell pm list users)) {

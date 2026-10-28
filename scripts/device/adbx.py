@@ -69,8 +69,14 @@ class Device:
             raise PreflightError(f"Device is streaming, refusing input ({focus})")
         if "mCallState=0" not in self.sh("dumpsys telephony.registry | grep -m1 mCallState", check=False):
             raise PreflightError("Device is in a call")
-        if "isKeyguardShowing=true" in self.sh("dumpsys window | grep isKeyguardShowing", check=False):
-            raise PreflightError("Device is locked")
+        if "isKeyguardShowing=true" in self.sh("dumpsys window | grep isKeyguardShowing", check=False) or "deviceLocked=1" in self.sh("dumpsys trust", check=False):
+            if self.serial.startswith("emulator-"):
+                self.sh("input keyevent KEYCODE_WAKEUP; wm dismiss-keyguard; sleep 1; input swipe 540 1900 540 600 200; sleep 1; input text 1234; input keyevent 66", check=False)
+                time.sleep(2)
+                if "isKeyguardShowing=true" in self.sh("dumpsys window | grep isKeyguardShowing", check=False) or "deviceLocked=1" in self.sh("dumpsys trust", check=False):
+                    raise PreflightError("Emulator is locked and standard PIN 1234 failed")
+            else:
+                raise PreflightError("Device is locked")
         if "mWakefulness=Awake" not in self.sh("dumpsys power | grep mWakefulness=", check=False):
             raise PreflightError("Screen is off")
         idle = self.idle_seconds()

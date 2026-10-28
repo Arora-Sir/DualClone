@@ -29,6 +29,7 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -181,6 +182,25 @@ fun DcConfirmDialog(
     }
 }
 
+/**
+ * The one snackbar host of the app. The Material default uses the inverse surface, which is light in dark mode and looked like
+ * a white sticker over a dark screen. This one follows the theme in every mode, including Pure black.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DcSnackbarHost(state: SnackbarHostState, modifier: Modifier = Modifier) {
+    SnackbarHost(state, modifier) { data ->
+        Snackbar(
+            snackbarData = data,
+            shape = DcShapes.card,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            actionColor = MaterialTheme.colorScheme.primary,
+            dismissActionContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
 /** Scaffold for pushed screens. Large title collapses on scroll and the back arrow always has a label. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -219,7 +239,7 @@ fun DcSubScreen(
                 )
             )
         },
-        snackbarHost = { if (snackbarHostState != null) SnackbarHost(snackbarHostState) },
+        snackbarHost = { if (snackbarHostState != null) DcSnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background,
         content = content
     )

@@ -32,7 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
+import com.mohitarora.dualclone.core.designsystem.components.DcSnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
@@ -196,7 +196,7 @@ fun HomeScreen(
                 )
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { DcSnackbarHost(snackbarHostState) },
         bottomBar = {
             AnimatedVisibility(
                 visible = state.isBulkMode,
@@ -245,7 +245,8 @@ fun HomeScreen(
                 onTabSelected = actions.onTabSelected,
                 totalCount = state.totalCount,
                 installedCount = state.installedCount,
-                clonedCount = state.clonedCount
+                clonedCount = state.clonedCount,
+                countsReady = !state.isLoading || state.totalCount > 0
             )
             ReconcileLine(
                 atMillis = state.lastReconcile.atMillis,
