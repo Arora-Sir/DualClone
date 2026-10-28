@@ -1,0 +1,19 @@
+#!/bin/sh
+# Enable with: git config core.hooksPath .githooks
+# Mechanical Shield Core Git Gate
+if [ "$ALLOW_AUTONOMOUS_GIT" != "1" ]; then
+  echo ""
+  echo "======================================================================"
+  echo "[SECURITY HALT] git commit blocked by mechanical Shield Core Gate."
+  echo "Automated agents are prohibited from committing code."
+  echo "To proceed manually, execute: ALLOW_AUTONOMOUS_GIT=1 git commit"
+  echo "======================================================================"
+  echo ""
+  exit 1
+fi
+
+# Blocks secrets first, then runs the private-data scan, version check and network import check.
+git diff --cached --name-only | sh .githooks/guard-secrets.sh || exit 1
+python scripts/release/scan_repo.py || exit 1
+python scripts/release/check_version.py || exit 1
+python scripts/release/check_network_imports.py || exit 1

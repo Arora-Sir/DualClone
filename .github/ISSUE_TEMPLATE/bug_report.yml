@@ -1,0 +1,75 @@
+name: Bug Report
+description: File a bug report for DualClone.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue. Please complete all fields below to help diagnose and resolve the problem quickly.
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Provide a clear and concise description of the issue.
+      placeholder: Describe what happened and what you expected to happen instead.
+    validations:
+      required: true
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Model
+      description: Exact device make and model number.
+      placeholder: Samsung Galaxy S24 Ultra SM-S928B
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: Android & One UI Version
+      description: Current operating system and manufacturer software version.
+      placeholder: Android 15, One UI 7.0
+    validations:
+      required: true
+  - type: input
+    id: shizuku-info
+    attributes:
+      label: Shizuku Version & Mode
+      description: Active Shizuku version and running mode.
+      placeholder: Shizuku v13.5.4 via Wireless Debugging
+    validations:
+      required: true
+  - type: dropdown
+    id: target-profile
+    attributes:
+      label: Active Target Profile
+      description: Select the target user profile where the issue occurred.
+      options:
+        - "Dual Messenger (User 95)"
+        - "Island or Work Profile (User 10)"
+        - "Primary Device Owner (User 0)"
+        - "Secure Folder (User 150)"
+        - "Other Secondary Profile"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction Steps
+      description: Step by step instructions to reproduce the behavior.
+      placeholder: |
+        1. Open DualClone.
+        2. Select target profile.
+        3. Tap clone icon on application.
+        4. Observe unexpected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or Logcat Snippet
+      description: Paste relevant logcat lines, Shizuku audit logs, or stack traces.
+      render: shell
+      placeholder: Paste logs or logcat output here.
+    validations:
+      required: false

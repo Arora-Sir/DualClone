@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Authentic National Payments Corporation of India (NPCI) UPI Vector Drawable -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="74dp"
+    android:height="20dp"
+    android:viewportWidth="368"
+    android:viewportHeight="102">
+
+    <!-- Group with vertical flip to correct PostScript y-axis inversion -->
+    <group
+        android:translateX="-37"
+        android:translateY="174"
+        android:scaleY="-1">
+
+        <!-- UPI Letterform 'U' -->
+        <group
+            android:translateX="156.12"
+            android:translateY="82.54">
+            <path
+                android:fillColor="#E0E0E0"
+                android:pathData="m 0,0 c -1.065,-3.835 -4.557,-6.488 -8.538,-6.488 h -99.491 c -2.711,0 -4.726,0.924 -6.051,2.77 -1.324,1.848 -1.608,4.134 -0.851,6.857 l 24.276,87.387 h 19.301 l -21.683,-78.05 h 77.206 l 21.683,78.05 h 19.297 z" />
+        </group>
+
+        <!-- UPI Letterform 'P' -->
+        <group
+            android:translateX="306.45"
+            android:translateY="170.29">
+            <path
+                android:fillColor="#E0E0E0"
+                android:pathData="m 0,0 c -1.337,1.843 -3.399,2.773 -6.2,2.773 h -106.036 l -5.252,-18.97 h 19.294 v 0.011 h 77.169 l -5.614,-20.272 h -77.171 l 0.007,0.042 h -19.286 l -16.007,-57.787 h 19.296 l 10.742,38.786 h 86.746 c 2.709,0 5.259,0.924 7.657,2.772 2.393,1.85 3.968,4.131 4.723,6.855 L 0.809,-6.996 C 1.593,-4.181 1.322,-1.845 0,0" />
+        </group>
+
+        <!-- UPI Letterform 'I' -->
+        <group
+            android:translateX="316.46"
+            android:translateY="76.50">
+            <path
+                android:fillColor="#E0E0E0"
+                android:pathData="M 0,0 H -19.283 L 7.535,96.855 h 19.284 z" />
+        </group>
+
+        <!-- NPCI Saffron Orange Chevron -->
+        <group
+            android:translateX="359.47"
+            android:translateY="173.17">
+            <path
+                android:fillColor="#E9661C"
+                android:pathData="m 0,0 24.396,-48.553 -51.343,-48.54 z" />
+        </group>
+
+        <!-- NPCI Forest Green Chevron -->
+        <group
+            android:translateX="376.59"
+            android:translateY="173.17">
+            <path
+                android:fillColor="#27803B"
+                android:pathData="m 0,0 24.414,-48.553 -51.322,-48.54 z" />
+        </group>
+    </group>
+</vector>

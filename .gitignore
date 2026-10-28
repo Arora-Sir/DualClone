@@ -1,0 +1,123 @@
+# Built-in Gradle & Build outputs
+.gradle/
+build/
+*/build/
+app/build/
+output.json
+
+# Android Studio & IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Compiled Binaries & Packages
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# Kotlin (Room schemas under app/schemas are committed on purpose)
+.kotlin/
+
+# Python scripts cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Test outputs, device traces & logs
+.e2e/
+test-results/
+*.log
+*.hprof
+
+# Signing keys & sensitive credentials
+*.jks
+*.keystore
+signing.properties
+key.properties
+google-services.json
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Internal agent and diagnostic documents
+bugs.md
+docs/bugs.md
+HANDOFF.md
+PROJECT_TRACKER.md
+handoff.md
+*.handoff.md
+FUTURE_WORK.md
+*.tmp
+
+# Signing material and secrets
+keystore.properties
+release-signing/
+# Any text file where a secret or key text is pasted
+key-text*.txt
+key_text*.txt
+key-backup*.txt
+secret*.txt
+secrets/
+*.b64
+*.jks.txt
+*.p12
+*.pfx
+*.pem
+*.key
+*.keystore.b64
+*.idsig
+*.apks
+*.xapk
+.env
+.env.*
+
+# Local agent and editor configuration
+.claude/
+CLAUDE.md
+.gemini/
+GEMINI.md
+AGENTS.md
+.cursor/
+.windsurf/
+.vscode/
+.fleet/
+private/
+
+# Device captures and tool output
+visual_audit_run_*/
+audit_run_*/
+window_dump.xml
+logcat*.txt
+bugreport*.zip
+*.perfetto-trace
+lint-results*.xml
+.venv/
+venv/
+*.orig
+*.rej
+*.bak
+*.swp
+app/release/
+app/debug/
+
+
+# Internal handoff notes under docs/
+docs/HANDOFF_*.md
+
+# Local owner tools and automation leftovers, never published
+TRIAGE_REPORT_*.md
+scripts/reproduce_issue_*.py
+scripts/release/key_backup.ps1
+scripts/release/key_backup.bat

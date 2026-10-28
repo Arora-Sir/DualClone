@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DualClone</string>
+
+    <!-- Shared actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_done">Done</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_open">Open</string>
+    <string name="action_check_again">Check again</string>
+    <string name="action_continue">Continue</string>
+    <string name="dc_loading">Loading</string>
+
+    <!-- Theme -->
+    <string name="theme_preset_wallpaper">Wallpaper</string>
+    <string name="theme_preset_default">Default</string>
+    <string name="theme_preset_one_ui">One UI</string>
+    <string name="theme_preset_orange">Orange</string>
+    <string name="theme_preset_emerald">Emerald</string>
+    <string name="theme_preset_purple">Purple</string>
+    <string name="theme_preset_rose">Rose</string>
+    <string name="theme_preset_mono">Mono</string>
+<string name="theme_preset_red">Red</string>
+<string name="theme_preset_cyan">Cyan</string>
+<string name="theme_preset_green">Green</string>
+    <string name="theme_preset_custom">Custom</string>
+    <string name="theme_mode_system">System</string>
+    <string name="theme_mode_light">Light</string>
+    <string name="theme_mode_dark">Dark</string>
+    <string name="palette_selected">Selected</string>
+    <string name="palette_not_selected">Not selected</string>
+
+    <!-- Errors and generic feedback -->
+    <string name="error_no_app_for_link">No app can open this link</string>
+    <string name="error_secure_folder_missing">Secure Folder was not found or is locked on this device</string>
+    <string name="error_shizuku_not_installed">Shizuku is not installed</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_profiles">Profiles and Shizuku</string>
+    <string name="settings_section_data">Data</string>
+    <string name="settings_section_updates">Updates and about</string>
+    <string name="settings_section_support">Support and developer</string>
+
+    <string name="settings_header_version">Version %1$s (build %2$d)</string>
+    <string name="settings_header_icon_description">DualClone app icon</string>
+    <string name="settings_badge_offline">No trackers</string>
+    <string name="settings_diagnostics_unlocked">Developer diagnostics unlocked</string>
+    <plurals name="settings_tap_hint">
+        <item quantity="one">%d more tap to unlock diagnostics</item>
+        <item quantity="other">%d more taps to unlock diagnostics</item>
+    </plurals>
+
+    <string name="appearance_mode_title">Theme mode</string>
+    <string name="appearance_palette_title">Color palette</string>
+    <string name="appearance_amoled_title">Pure AMOLED black</string>
+    <string name="appearance_amoled_summary">True black backgrounds for OLED displays</string>
+    <string name="appearance_amoled_disabled">Available in dark mode only</string>
+    <string name="custom_color_hue">Hue</string>
+    <string name="custom_color_hex_label">Hex color</string>
+    <string name="custom_color_hex_error">Enter six hex digits, for example 00BCD4</string>
+    <string name="custom_color_preview_title">Preview</string>
+    <string name="custom_color_preview_button">Sample button</string>
+    <string name="custom_color_preview_badge">Sample badge</string>
+<string name="custom_color_help">Drag to pick a color or type its hex code. The app grows its accent tones from it.</string>
+<string name="custom_color_reset">Reset</string>
+<string name="custom_color_hue_state">%1$d degrees</string>
+<string name="custom_color_square">Saturation and brightness</string>
+<string name="custom_color_square_state">Saturation %1$d percent, brightness %2$d percent</string>
+<string name="custom_color_more_saturated">More saturated</string>
+<string name="custom_color_less_saturated">Less saturated</string>
+<string name="custom_color_brighter">Brighter</string>
+<string name="custom_color_darker">Darker</string>
+<string name="custom_color_contrast_dark">Contrast %1$.1f to 1 on a dark card</string>
+<string name="custom_color_contrast_light">Contrast %1$.1f to 1 on a light card</string>
+
+    <string name="profiles_shizuku_title">Shizuku</string>
+    <string name="profiles_shizuku_open">Open Shizuku</string>
+    <string name="profiles_shizuku_setup">Set up Shizuku</string>
+    <string name="profiles_empty">No profiles found yet. Start Shizuku and grant permission.</string>
+    <string name="profiles_user_id">User %1$d</string>
+    <string name="profiles_chip_running">Running</string>
+    <string name="profiles_chip_paused">Paused</string>
+    <string name="profiles_chip_stopped">Stopped</string>
+    <string name="profiles_chip_restricted">Restricted</string>
+    <string name="profile_kind_primary">Primary profile</string>
+    <string name="profile_kind_dual">Dual Messenger</string>
+    <string name="profile_kind_work">Work profile</string>
+    <string name="profile_kind_secure">Secure Folder</string>
+    <string name="profile_kind_other">Other user</string>
+    <string name="profiles_dual_missing_title">Dual Messenger is not set up</string>
+    <string name="profiles_dual_missing_body">Samsung leaves Dual Messenger off until it is enabled once. DualClone can enable it through Shizuku.</string>
+    <string name="profiles_dual_missing_action">Enable Dual Messenger</string>
+    <string name="profiles_knox_title">Open Secure Folder</string>
+    <string name="profiles_knox_summary">Samsung Knox blocks shell cloning into Secure Folder. Open it directly to add apps.</string>
+
+    <string name="data_backup_title">Backup and restore</string>
+    <string name="data_backup_summary">Export or import your clone lists and settings</string>
+    <string name="data_orphans_title">Clones without a host app</string>
+    <string name="data_orphans_summary">Find and remove clones whose original app is gone</string>
+    <string name="data_refresh_launcher_title">Refresh launcher</string>
+    <string name="data_refresh_launcher_summary">Restarts the home screen to clear stale icons</string>
+    <string name="data_auto_refresh_title">Refresh launcher after removals</string>
+    <string name="data_auto_refresh_summary">Restarts the home screen automatically when a clone is removed</string>
+    <string name="data_audit_title">Command audit log</string>
+    <string name="data_audit_summary">View every Shizuku command DualClone ran</string>
+    <string name="data_audit_clear_title">Clear command audit log</string>
+    <string name="data_audit_clear_summary">Delete all stored command records from this device</string>
+    <string name="data_audit_clear_dialog_title">Clear the audit log?</string>
+    <string name="data_audit_clear_dialog_body">All stored command records are deleted from this device. This cannot be undone.</string>
+    <string name="data_diagnostics_title">Developer diagnostics</string>
+    <string name="data_diagnostics_summary">Database stats, Shizuku details and the raw command trail</string>
+
+    <string name="updates_version_title">Version</string>
+    <string name="updates_version_summary">%1$s (build %2$d)</string>
+    <string name="updates_check_title">Check for updates</string>
+    <string name="updates_check_summary">Look for a newer release on GitHub</string>
+
+    <string name="support_row_title">Support development</string>
+    <string name="support_row_summary">UPI, PayPal and GitHub Sponsors</string>
+    <string name="attribution_row_title">Open source thanks</string>
+    <string name="attribution_row_summary">Projects and people DualClone builds on</string>
+    <string name="issue_row_title">Report an issue</string>
+    <string name="issue_row_summary">Bugs and feature requests on GitHub</string>
+    <string name="privacy_row_title">Privacy</string>
+    <string name="privacy_row_summary">Only update checks use the internet</string>
+
+    <string name="developer_name">Mohit Arora</string>
+    <string name="developer_role">Android developer</string>
+    <string name="developer_avatar_description">Mohit Arora</string>
+    <string name="developer_link_github">@Arora-Sir</string>
+    <string name="developer_link_linkedin">in/arora-sir</string>
+    <string name="developer_link_website">mohitarora.me</string>
+    <string name="developer_link_x">@MohitAr0rA</string>
+    <string name="settings_footer">Crafted for Samsung Galaxy devices to unlock full multi-user app freedom.</string>
+
+    <!-- Support sheet -->
+    <string name="support_title">Support development</string>
+    <string name="support_intro">DualClone is free, open source and fully offline. Your support pays for maintenance and for testing on real devices.</string>
+    <string name="support_upi_heading">UPI payment (India)</string>
+    <string name="support_upi_logo_description">UPI</string>
+    <string name="support_upi_qr_description">UPI QR code. Tap to enlarge.</string>
+    <string name="support_upi_qr_large_description">Large UPI QR code. Tap to close.</string>
+    <string name="support_upi_hint">Scan the code with any UPI app or tap Pay with UPI</string>
+    <string name="support_upi_pay">Pay with UPI</string>
+    <string name="support_upi_copy">Copy UPI ID</string>
+    <string name="support_upi_chooser">Pay with UPI</string>
+    <string name="support_upi_copied">UPI ID copied</string>
+    <string name="support_upi_no_app">No UPI app found. UPI ID copied.</string>
+    <string name="support_international_heading">International</string>
+    <string name="support_paypal">PayPal</string>
+    <string name="support_sponsors">GitHub Sponsors</string>
+
+    <!-- Attribution sheet -->
+    <string name="attribution_title">Open source thanks</string>
+    <string name="attribution_intro">DualClone stands on the work of these projects and people.</string>
+    <string name="attribution_open_link">Open %1$s</string>
+    <!-- Home -->
+    <string name="action_clone">Clone</string>
+    <string name="action_remove">Remove</string>
+    <string name="search_hint">Search apps or packages</string>
+    <string name="search_clear">Clear search</string>
+    <string name="tab_all">All</string>
+    <string name="tab_installed">Uncloned</string>
+    <string name="tab_cloned">Cloned</string>
+    <string name="filter_and_sort">Filter and sort</string>
+    <string name="list_alphabet_rail">Alphabet index. Drag to jump to a letter.</string>
+    <string name="group_today">Today</string>
+    <string name="group_week">This week</string>
+    <string name="group_month">This month</string>
+    <string name="group_earlier">Earlier</string>
+    <string name="profile_target_heading">Clone into</string>
+    <string name="badge_dual">Dual</string>
+    <string name="badge_work">Work</string>
+    <string name="badge_system">System</string>
+    <string name="badge_profile_owner">Profile owner</string>
+    <string name="badge_other">Profile</string>
+    <string name="state_selected">Selected</string>
+    <string name="state_not_selected">Not selected</string>
+    <string name="card_open_special_access">Open special access</string>
+    <string name="card_toggle_selection">Select or deselect</string>
+    <string name="card_special_access_description">Special access for %1$s</string>
+    <string name="card_updated">Updated %1$s</string>
+    <string name="card_installed">Installed %1$s</string>
+    <string name="disabled_shizuku">Shizuku is not ready, so cloning is unavailable.</string>
+    <string name="disabled_paused">This profile is paused. Resume it to clone or remove apps.</string>
+    <string name="disabled_restricted">Samsung Knox does not allow cloning into this profile.</string>
+    <string name="disabled_no_profile">No clone target profile is available.</string>
+
+    <string name="shizuku_badge_ready">Ready</string>
+    <string name="shizuku_badge_checking">Checking</string>
+    <string name="shizuku_badge_grant">Grant</string>
+    <string name="shizuku_badge_setup">Setup</string>
+    <string name="shizuku_badge_stopped">Stopped</string>
+    <string name="shizuku_summary_ready">Connected and permitted</string>
+    <string name="shizuku_summary_checking">Checking the connection</string>
+    <string name="shizuku_summary_permission">Running, permission needed</string>
+    <string name="shizuku_summary_dual_missing">Running, Dual Messenger not set up</string>
+    <string name="shizuku_summary_stopped">Not running. Tap to set up.</string>
+
+    <string name="guidance_permission_title">Permission needed</string>
+    <string name="guidance_permission_body">Shizuku is running. Allow DualClone to run package commands to start cloning.</string>
+    <string name="guidance_dual_title">Dual Messenger not set up</string>
+    <string name="guidance_dual_body">Samsung has not created the Dual Messenger profile yet. Open the setup guide to enable it.</string>
+    <string name="guidance_stopped_title">Shizuku is not running</string>
+    <string name="guidance_stopped_body">Clone and remove stay off until Shizuku is running. Start it, then check again.</string>
+
+    <string name="noprofile_title">No clone profile found</string>
+    <string name="noprofile_body_samsung">Enable Dual Messenger in Settings, then Advanced features. You can also create a work profile with Island.</string>
+    <string name="noprofile_body_other">Create a work profile with Island or Shelter, then return here.</string>
+    <string name="noprofile_open_settings">Open Dual Messenger settings</string>
+
+    <string name="knox_title">Secure Folder is protected by Knox</string>
+    <string name="knox_body">Samsung Knox blocks shell tools from adding apps to Secure Folder. Open Secure Folder directly to manage its apps.</string>
+    <string name="knox_open">Open Secure Folder</string>
+
+    <string name="banner_paused_title">Profile paused</string>
+    <string name="banner_paused_body">%1$s is paused. Resume it before cloning or removing apps.</string>
+    <string name="banner_host_copy_title">DualClone is installed in a profile</string>
+    <string name="banner_host_copy_body">A copy of DualClone exists in user %1$d. Remove it to avoid launcher clutter.</string>
+    <string name="banner_host_copy_action">Remove copy</string>
+    <string name="banner_stale_title">Clone list may be out of date</string>
+    <string name="banner_stale_body">The last profile scan failed, so the list shows the previous result.</string>
+    <string name="banner_launcher_title">Home screen may still show icons</string>
+    <string name="banner_launcher_body">Samsung One UI can keep an icon after a removal. Restarting the home screen clears it.</string>
+    <string name="banner_dismiss">Dismiss</string>
+    <string name="reconcile_ok">Updated %1$s</string>
+    <string name="reconcile_partial">Updated %1$s, some profiles could not be read</string>
+    <string name="reconcile_paused">Updated %1$s. %2$s.</string>
+    <string name="profile_problem_paused">%1$s is paused</string>
+    <string name="profile_problem_stopped">%1$s is stopped</string>
+    <string name="guidance_grant">Grant</string>
+    <string name="time_just_now">just now</string>
+
+    <string name="empty_search_title">No matches</string>
+    <string name="empty_search_body">No apps match \"%1$s\".</string>
+    <string name="empty_search_clear">Clear search</string>
+    <string name="empty_cloned_title">No cloned apps yet</string>
+    <string name="empty_cloned_body">Pick an app on the All tab and tap Clone to duplicate it into this profile.</string>
+    <string name="empty_cloned_action">Browse apps</string>
+    <string name="empty_installed_title">Nothing left to clone</string>
+    <string name="empty_installed_body">Every app that matches the current filters is already cloned.</string>
+    <string name="empty_all_title">No apps found</string>
+    <string name="empty_all_body">Pull down to refresh the app list.</string>
+    <string name="empty_all_action">Refresh</string>
+
+    <string name="remove_dialog_title">Remove the clone of %1$s?</string>
+    <string name="remove_dialog_body">The clone and all of its data in %1$s will be deleted. The original app is not affected.</string>
+    <plurals name="bulk_remove_dialog_title">
+        <item quantity="one">Remove %d clone?</item>
+        <item quantity="other">Remove %d clones?</item>
+    </plurals>
+    <string name="bulk_remove_dialog_body">The clones and all of their data in %1$s will be deleted. The original apps are not affected.</string>
+    <plurals name="bulk_selected">
+        <item quantity="one">%d selected</item>
+        <item quantity="other">%d selected</item>
+    </plurals>
+    <string name="bulk_clone">Clone selected</string>
+    <string name="bulk_remove">Remove selected</string>
+    <string name="bulk_exit">Exit selection mode</string>
+    <string name="bulk_summary_cloned">Cloned %1$d of %2$d</string>
+    <string name="bulk_summary_removed">Removed %1$d of %2$d</string>
+    <string name="bulk_summary_all_ok">Every app finished successfully.</string>
+    <string name="bulk_summary_retry">Retry failed</string>
+
+    <string name="pm_error_not_installed">The app is not installed for that profile.</string>
+    <string name="pm_error_policy">A device policy blocks this change.</string>
+    <string name="pm_error_owner">The profile owner blocks this change.</string>
+    <string name="pm_error_restricted">This profile does not allow the change.</string>
+    <string name="pm_error_security">Android denied permission for this command.</string>
+    <string name="pm_error_timeout">The command timed out.</string>
+    <string name="pm_error_shizuku">Shizuku is not available.</string>
+    <string name="pm_error_unknown">The command did not succeed.</string>
+
+    <!-- Sort and filter -->
+    <string name="sort_title">Sort apps</string>
+    <string name="sort_name_asc">Name, A to Z</string>
+    <string name="sort_name_desc">Name, Z to A</string>
+    <string name="sort_recently_updated">Recently updated</string>
+    <string name="sort_install_time">Install time</string>
+    <string name="filter_heading">Filters</string>
+    <string name="filter_include_system">Include system apps</string>
+    <string name="filter_uncloned_only">Show uncloned only</string>
+
+    <!-- App operations sheet -->
+    <string name="appops_title">Special access in %1$s</string>
+    <string name="appops_info_title">Why this matters</string>
+    <string name="appops_info_body">A clone runs in an isolated profile with its own storage. These permissions let it reach shared files, install updates and draw overlays.</string>
+    <string name="appops_files_title">All files access</string>
+    <string name="appops_files_body">Fixes file managers and media backups in the clone</string>
+    <string name="appops_install_title">Install unknown apps</string>
+    <string name="appops_install_body">Lets a cloned browser or chat app start APK installs</string>
+    <string name="appops_settings_title">Modify system settings</string>
+    <string name="appops_settings_body">Lets cloned utilities change ringtones and display options</string>
+    <string name="appops_overlay_title">Display over other apps</string>
+    <string name="appops_overlay_body">Lets cloned floating tools and chat heads draw overlays</string>
+    <string name="appops_state_allowed">Allowed</string>
+    <string name="appops_state_denied">Denied</string>
+    <string name="appops_state_default">System default</string>
+    <string name="appops_custom_title">Custom app operation</string>
+    <string name="appops_custom_body">Grant any other Android operation by name</string>
+    <string name="appops_custom_hint">For example POST_NOTIFICATION</string>
+    <string name="appops_custom_error">Use capital letters and underscores only</string>
+    <string name="appops_custom_allow">Allow</string>
+
+    <!-- Shizuku setup and onboarding -->
+    <string name="setup_title">Set up DualClone</string>
+    <string name="setup_intro">DualClone needs Shizuku to manage Samsung profiles without root. Four short steps.</string>
+    <string name="setup_intro_ready">Everything is ready. You can close this guide.</string>
+    <string name="setup_step_done">Done</string>
+    <string name="setup_step_current">Current step</string>
+    <string name="setup_step_upcoming">Not started</string>
+    <string name="setup_step_install_title">Install Shizuku</string>
+    <string name="setup_step_install_body">Get Shizuku from GitHub. The thedjchi fork restarts itself after a reboot.</string>
+    <string name="setup_get_shizuku">Get Shizuku</string>
+    <string name="setup_get_fork">Get the fork</string>
+    <string name="setup_step_start_title">Start Shizuku</string>
+    <string name="setup_step_start_body">Open Shizuku and start it with Wireless debugging or a computer.</string>
+    <string name="setup_wireless_debugging">Developer options</string>
+    <string name="setup_step_grant_title">Allow DualClone</string>
+    <string name="setup_step_grant_body">Grant DualClone permission to run package commands.</string>
+    <string name="setup_grant">Grant permission</string>
+    <string name="setup_denied_title">Permission was denied</string>
+    <string name="setup_denied_body">Open Shizuku, choose Authorized apps and switch DualClone on. Then check again.</string>
+    <string name="setup_step_profiles_title">Choose profiles</string>
+    <string name="setup_step_profiles_body">Pick Dual Messenger or a work profile as the clone target on the home screen.</string>
+    <string name="setup_step_profiles_dual_missing">Samsung has no Dual Messenger profile yet. Turn it on once in Settings, then Advanced features, then Dual Messenger.</string>
+    <string name="setup_step_profiles_not_samsung">Dual Messenger is a Samsung feature. On this device create a work profile with Island and clone into that.</string>
+    <string name="setup_step_profiles_ready">Profiles were found. Choose one on the home screen.</string>
+
+    <!-- Audit log and diagnostics -->
+    <string name="audit_title">Command audit log</string>
+    <string name="audit_empty_title">No commands yet</string>
+    <string name="audit_empty_body">Every Shizuku command DualClone runs appears here.</string>
+    <plurals name="audit_entries">
+        <item quantity="one">%d entry</item>
+        <item quantity="other">%d entries</item>
+    </plurals>
+    <string name="audit_success">Success</string>
+    <string name="audit_failed">Failed</string>
+    <string name="audit_result">Result %1$s</string>
+    <string name="audit_meta">%1$s, user %2$d, exit code %3$d</string>
+    <string name="diag_shizuku_heading">Privileged backend</string>
+    <string name="diag_storage_heading">Local storage</string>
+    <string name="diag_uid">Calling UID</string>
+    <string name="diag_selinux">SELinux context</string>
+    <string name="diag_api">Shizuku API version</string>
+    <string name="diag_helper">Process helper</string>
+    <string name="diag_helper_ok">Available</string>
+    <string name="diag_helper_missing">Missing</string>
+    <string name="diag_catalog">Catalog</string>
+    <string name="diag_clones">Clones</string>
+    <string name="diag_indexed">%1$d apps indexed</string>
+    <string name="diag_tracked">%1$d tracked</string>
+    <string name="diag_audit_count">%1$d logged commands</string>
+    <string name="diag_unknown">Unknown</string>
+    <string name="diag_copy">Copy report</string>
+    <string name="diag_copied">Report copied</string>
+    <string name="diag_report">DualClone diagnostics. Apps %1$d, clones %2$d, commands %3$d, uid %4$s, context %5$s, api %6$s</string>
+    <string name="data_reconcile_title">Last profile check</string>
+    <string name="licenses_row_title">Licenses</string>
+    <string name="licenses_row_summary">Third party licenses</string>
+    <string name="profiles_advanced_title">Show other users</string>
+    <string name="profiles_advanced_summary">Advanced. Lists full Android users as clone targets.</string>
+
+    <!-- Backup and orphans -->
+    <string name="backup_title">Backup and restore</string>
+    <string name="backup_export">Export backup</string>
+    <string name="backup_export_body">Saves your clone lists, app permission presets and theme to one file.</string>
+    <string name="backup_import">Import backup</string>
+    <string name="backup_import_body">Pick a backup file. You see a preview before anything changes.</string>
+    <string name="backup_limits_title">What a backup does not hold</string>
+    <string name="backup_limits_body">App data cannot be copied without root, so only clone lists and settings are saved.</string>
+    <string name="backup_export_password_title">Protect with a password</string>
+    <string name="backup_export_password_body">Leave it empty for an unencrypted file. A password encrypts the backup with AES-256.</string>
+    <string name="backup_import_password_title">Password required</string>
+    <string name="backup_import_password_body">This backup is encrypted. Enter its password.</string>
+    <string name="backup_wrong_password">That password is wrong. Try again.</string>
+    <string name="backup_password_label">Password</string>
+    <string name="backup_preview_heading">Preview</string>
+    <string name="backup_preview_empty">This backup holds no clones that fit this device.</string>
+    <plurals name="backup_skipped_title">
+    <item quantity="one">%1$d item skipped</item>
+    <item quantity="other">%1$d items skipped</item>
+</plurals>
+    <string name="backup_apply">Restore selected</string>
+    <string name="backup_done_title">Restore finished</string>
+    <string name="backup_done_body">%1$d cloned, %2$d failed, %3$d skipped.</string>
+<string name="backup_result_done">Restored</string>
+<string name="backup_result_failed">Failed</string>
+<string name="backup_result_skipped">Skipped</string>
+    <string name="backup_error_title">Backup problem</string>
+    <string name="backup_error_body">The file could not be read.</string>
+
+    <string name="orphans_title">Clones without a host app</string>
+    <string name="orphans_info_title">What this finds</string>
+    <string name="orphans_info_body">Apps in a profile whose original is no longer installed. Apps installed natively in a profile are marked and never selected for you.</string>
+    <string name="orphans_empty_title">Nothing to clean up</string>
+    <string name="orphans_empty_body">Every clone still has its host app.</string>
+    <string name="orphans_failed_body">Some profiles could not be scanned, so this list may be incomplete.</string>
+    <string name="orphans_rescan">Scan again</string>
+    <string name="orphans_only_in_profile">Only in this profile</string>
+    <plurals name="orphans_remove">
+        <item quantity="one">Remove %d app</item>
+        <item quantity="other">Remove %d apps</item>
+    </plurals>
+    <plurals name="orphans_confirm_title">
+        <item quantity="one">Remove %d app?</item>
+        <item quantity="other">Remove %d apps?</item>
+    </plurals>
+    <string name="orphans_confirm_body">The apps and all of their data in their profiles will be deleted.</string>
+
+    <!-- Attribution descriptions -->
+    <string name="attr_darq_title">DarQ-Reborn</string>
+    <string name="attr_darq_body">Theming architecture, the pure black AMOLED engine and AppOps patterns.</string>
+    <string name="attr_thedjchi_title">thedjchi / Shizuku</string>
+    <string name="attr_thedjchi_body">Recommended Shizuku fork with boot auto-start and reboot persistence.</string>
+    <string name="attr_shizuku_title">Shizuku</string>
+    <string name="attr_shizuku_body">Deadlock-free IPC framework for privileged binder access.</string>
+    <string name="attr_island_title">Island</string>
+    <string name="attr_island_body">Multi-user and work profile concepts for Android containerization.</string>
+    <string name="attr_dual_manager_title">Dual-Manager</string>
+    <string name="attr_dual_manager_body">Dual Messenger inspection and architecture by trunone.</string>
+    <string name="attr_artemis_title">Super-Artemis</string>
+    <string name="attr_artemis_body">Design tokens, high contrast QR cards and the device test harness.</string>
+    <string name="attr_compose_title">Jetpack Compose</string>
+    <string name="attr_compose_body">Declarative Material 3 UI toolkit by Google.</string>
+    <string name="attr_mcu_title">Material Color Utilities</string>
+    <string name="attr_mcu_body">The color algorithm from Google, ported to Kotlin by Jordon de Hoog, generates every accent palette from one seed color. Apache License 2.0.</string>
+
+    <!-- Design round 2 -->
+    <string name="accent_more">More colors</string>
+    <string name="accent_teal">Teal</string>
+    <string name="more_row_title">More</string>
+    <string name="more_row_summary">Audit log, diagnostics and licenses</string>
+    <string name="more_title">More</string>
+    <string name="updates_badge_new">New</string>
+    <string name="updates_daily_title">Check daily</string>
+    <string name="updates_daily_summary">Looks for a new release once a day. It never downloads on its own.</string>
+    <string name="updates_privacy_note">Updating is the only thing in DualClone that uses the internet. It talks only to GitHub, and only when you check for updates.</string>
+    <string name="updates_state_checking">Checking GitHub</string>
+    <string name="updates_state_up_to_date">You have the latest version</string>
+    <string name="updates_state_available">Version %1$s is available</string>
+    <string name="updates_state_downloading">Downloading</string>
+    <string name="updates_state_downloading_percent">Downloading %1$d%%</string>
+    <string name="updates_state_downloaded">Version %1$s is ready to install</string>
+    <string name="update_sheet_title">Update available</string>
+    <string name="update_sheet_size">Download size %1$s</string>
+    <string name="update_sheet_download">Download update</string>
+    <string name="update_sheet_install">Install</string>
+    <string name="update_sheet_verified">The download is verified against its published checksum.</string>
+    <string name="update_sheet_failed">Update problem</string>
+    <string name="update_sheet_no_changelog">No release notes were published.</string>
+    <string name="update_sheet_to">to</string>
+    <string name="update_permission_title">Allow installs from DualClone</string>
+    <string name="update_permission_body">Android needs your permission before DualClone can start an update. Open the setting, switch it on, then return and tap Install.</string>
+    <string name="update_permission_open">Open settings</string>
+
+    <!-- Selective export -->
+    <string name="backup_section_absent">Not in this file</string>
+    <string name="export_options_title">Export options</string>
+    <string name="export_options_intro">Choose what goes into the backup file.</string>
+    <string name="export_options_contents">Include</string>
+    <string name="export_options_none">Tick at least one section to export.</string>
+    <string name="export_preset_everything">Everything</string>
+    <string name="export_preset_clones">Clone list only</string>
+    <string name="export_preset_settings">Settings only</string>
+    <string name="export_part_clones">Clone list</string>
+    <string name="export_part_clones_body">Which apps are cloned into each profile</string>
+    <string name="export_part_presets">App permission presets</string>
+    <string name="export_part_presets_body">Remembered special access choices for clones</string>
+    <string name="export_part_settings">Settings</string>
+    <string name="export_part_settings_body">Theme and update choices. No clone data.</string>
+    <string name="backup_has_everything">This file has the clone list, app permission presets and settings.</string>
+    <string name="backup_has_settings_only">This file has settings only.</string>
+    <string name="backup_has_clones_only">This file has the clone list only.</string>
+    <string name="backup_has_presets_only">This file has app permission presets only.</string>
+    <string name="backup_has_clones_presets">This file has the clone list and app permission presets.</string>
+    <string name="backup_has_clones_settings">This file has the clone list and settings.</string>
+    <string name="backup_has_presets_settings">This file has app permission presets and settings.</string>
+</resources>

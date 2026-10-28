@@ -1,0 +1,21 @@
+#!/bin/sh
+# Mechanical Shield Core Git Gate
+if [ "$ALLOW_AUTONOMOUS_GIT" != "1" ]; then
+  echo ""
+  echo "======================================================================"
+  echo "[SECURITY HALT] git push blocked by mechanical Shield Core Gate."
+  echo "Automated agents are prohibited from pushing to remote."
+  echo "To proceed manually, execute: ALLOW_AUTONOMOUS_GIT=1 git push"
+  echo "======================================================================"
+  echo ""
+  exit 1
+fi
+
+# Blocks a push when any commit being pushed contains a secret or signing file.
+python scripts/release/prepush_audit.py || exit 1
+zero=0000000000000000000000000000000000000000
+while read local_ref local_sha remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue
+  if [ "$remote_sha" = "$zero" ]; then range="$local_sha"; else range="$remote_sha..$local_sha"; fi
+  git log --name-only --pretty=format: $range | sort -u | sh .githooks/guard-secrets.sh || exit 1
+done

@@ -1,0 +1,24 @@
+# Exact permission allow-list for release APKs, checked by verify_release.py.
+# A new permission fails the release check until it is reviewed and added here on purpose.
+# A leading dot means the application id is prepended.
+
+# Update check and APK download. All other code stays offline.
+android.permission.INTERNET
+# Hand the downloaded APK to the system installer.
+android.permission.REQUEST_INSTALL_PACKAGES
+
+# List every installed app so the user can pick what to clone.
+android.permission.QUERY_ALL_PACKAGES
+
+# Shizuku and compatible forks.
+moe.shizuku.manager.permission.API_V23
+moe.shizuku.privileged.api.permission.API_V2
+af.shizuku.plus.permission.API_V23
+af.shizuku.plus.api.permission.API_V2
+
+# Merged in by WorkManager and AndroidX libraries.
+android.permission.WAKE_LOCK
+android.permission.ACCESS_NETWORK_STATE
+android.permission.RECEIVE_BOOT_COMPLETED
+android.permission.FOREGROUND_SERVICE
+.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION

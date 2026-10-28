@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_err_network">Could not reach GitHub. Check your connection and try again.</string>
+    <string name="update_err_timeout">GitHub took too long to answer. Try again in a moment.</string>
+    <string name="update_err_bad_response">GitHub sent an answer DualClone could not use.</string>
+    <string name="update_err_rate_limited">GitHub is limiting requests right now. Try again later.</string>
+    <string name="update_err_wrong_host">The update pointed to an address that is not allowed, so it was blocked.</string>
+    <string name="update_err_no_apk">The latest release has no APK for this app.</string>
+    <string name="update_err_no_checksum">The latest release has no checksum file, so it cannot be verified.</string>
+    <string name="update_err_checksum">The downloaded file did not match its checksum and was deleted.</string>
+    <string name="update_err_too_large">The update is larger than the allowed size.</string>
+    <string name="update_err_interrupted">The download was interrupted. Tap download to continue.</string>
+    <string name="update_err_storage">The update could not be saved on this device.</string>
+    <string name="update_err_not_available">There is no update to download. Check for updates first.</string>
+</resources>
