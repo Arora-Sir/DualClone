@@ -49,7 +49,7 @@ class StableLayoutTest {
     private fun str(id: Int) = InstrumentationRegistry.getInstrumentation().targetContext.getString(id)
 
     private fun actions() = SettingsActions(
-        onBack = {}, onModeChange = {}, onPresetChange = {}, onApplyCustomColor = {}, onPureBlackChange = {},
+        onBack = {}, onModeChange = {}, onPresetChange = {}, onApplyCustomColor = {}, onPureBlackChange = {}, onSurfaceLiftChange = {},
         onEnableDualMessenger = {}, onClearAuditLog = {}, onRequestShizukuPermission = {}, onRefreshShizuku = {},
         onOpenDiagnostics = {}
     )
