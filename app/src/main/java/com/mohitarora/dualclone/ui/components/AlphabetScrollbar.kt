@@ -2,6 +2,7 @@ package com.mohitarora.dualclone.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import com.mohitarora.dualclone.core.designsystem.dcSystemGestureExclusion
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -45,11 +46,12 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import com.mohitarora.dualclone.R
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mohitarora.dualclone.R
+import com.mohitarora.dualclone.core.designsystem.dcSystemGestureExclusion
 import com.mohitarora.dualclone.ui.viewmodel.SortOrder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -71,6 +73,7 @@ fun AlphabetScrollbar(
     var activeLetter by remember { mutableStateOf<Char?>(null) }
     var lastLetter by remember { mutableStateOf<Char?>(null) }
     var isDragging by remember { mutableStateOf(false) }
+    var isExpanded by remember { mutableStateOf(false) }
     var touchY by remember { mutableFloatStateOf(0f) }
     val haptic = LocalHapticFeedback.current
     val density = LocalDensity.current
@@ -101,6 +104,17 @@ fun AlphabetScrollbar(
             label = "BubbleY"
         )
 
+        val animatedRailWidth by animateDpAsState(
+            targetValue = if (isExpanded) 28.dp else 4.dp,
+            animationSpec = spring(stiffness = 900f),
+            label = "RailWidth"
+        )
+        val lettersAlpha by animateFloatAsState(
+            targetValue = if (isExpanded) 1f else 0f,
+            animationSpec = tween(durationMillis = 150),
+            label = "LettersAlpha"
+        )
+
         // Floating preview bubble tracking finger position
         AnimatedVisibility(
             visible = isDragging && (activeLetter != null || lastLetter != null),
@@ -117,7 +131,7 @@ fun AlphabetScrollbar(
             ) + fadeOut(tween(200)),
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .offset(x = (-72).dp, y = animatedBubbleY.dp)
+                .offset(x = (-68).dp, y = animatedBubbleY.dp)
         ) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
@@ -138,17 +152,13 @@ fun AlphabetScrollbar(
             }
         }
 
-        // Alphabet rail pinned to right edge with 4dp gesture safety padding
-        Column(
+        // Hit box and expandable alphabet rail
+        Box(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
-                .padding(end = 4.dp)
-                .width(32.dp)
+                .width(28.dp)
                 .fillMaxHeight()
-                .padding(vertical = 8.dp)
-                .clip(RoundedCornerShape(14.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                .dcSystemGestureExclusion()
+                .then(if (isExpanded) Modifier.dcSystemGestureExclusion() else Modifier)
                 .semantics { contentDescription = railDescription }
                 .pointerInput(shown, totalHeightPx) {
                     awaitEachGesture {
@@ -159,6 +169,7 @@ fun AlphabetScrollbar(
                             val clampedY = down.position.y.coerceIn(0f, currentHeight.toFloat())
                             touchY = clampedY
                             isDragging = true
+                            isExpanded = true
                             val dynamicItemHeight = currentHeight.toFloat() / shown.size
                             val index = (clampedY / dynamicItemHeight).toInt().coerceIn(0, shown.lastIndex)
                             val letter = shown[index]
@@ -175,8 +186,9 @@ fun AlphabetScrollbar(
                             if (!change.pressed) {
                                 hideJob?.cancel()
                                 hideJob = scope.launch {
-                                    delay(300L)
                                     isDragging = false
+                                    delay(800L)
+                                    isExpanded = false
                                     activeLetter = null
                                 }
                                 break
@@ -199,29 +211,53 @@ fun AlphabetScrollbar(
                         }
                     }
                 },
-            horizontalAlignment = Alignment.CenterHorizontally
+            contentAlignment = Alignment.CenterEnd
         ) {
-            // NOTE: Sized in dp, so a large system font cannot grow the letters past their slot.
-            val dynamicFontSize = with(density) { (itemHeightDp.value * 0.70f).coerceIn(9f, 13.5f).dp.toSp() }
-
-            shown.forEach { letter ->
-                val isSelected = activeLetter == letter
+            if (!isExpanded) {
+                // Sleek idle fast-scroll thumb
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(itemHeightDp),
-                    contentAlignment = Alignment.Center
+                        .padding(end = 2.dp)
+                        .width(4.dp)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f))
+                )
+            } else {
+                // Expanded alphabet rail with letters
+                Column(
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                        .width(animatedRailWidth)
+                        .fillMaxHeight()
+                        .padding(vertical = 8.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .alpha(lettersAlpha),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = letter.toString(),
-                        fontSize = if (isSelected) dynamicFontSize * 1.25f else dynamicFontSize,
-                        fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                        style = LocalTextStyle.current.copy(
-                            lineHeight = if (isSelected) dynamicFontSize * 1.25f else dynamicFontSize,
-                            platformStyle = PlatformTextStyle(includeFontPadding = false)
-                        )
-                    )
+                    val dynamicFontSize = with(density) { (itemHeightDp.value * 0.70f).coerceIn(9f, 13.5f).dp.toSp() }
+
+                    shown.forEach { letter ->
+                        val isSelected = activeLetter == letter
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(itemHeightDp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = letter.toString(),
+                                fontSize = if (isSelected) dynamicFontSize * 1.25f else dynamicFontSize,
+                                fontWeight = if (isSelected) FontWeight.ExtraBold else FontWeight.Bold,
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                                style = LocalTextStyle.current.copy(
+                                    lineHeight = if (isSelected) dynamicFontSize * 1.25f else dynamicFontSize,
+                                    platformStyle = PlatformTextStyle(includeFontPadding = false)
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }

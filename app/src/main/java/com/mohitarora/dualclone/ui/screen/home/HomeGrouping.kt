@@ -52,7 +52,7 @@ fun groupApps(apps: List<AppItem>, sort: SortOrder, now: Long = System.currentTi
         .map { (key, value) -> AppGroup("h_$key", null, value.first, value.second) }
 }
 
-/** Index of the first list item for [letter] or the next group after it. Headers count as one item. */
+/** Index of the first list item for [letter] or the next group after it. */
 fun indexForLetter(groups: List<AppGroup>, sort: SortOrder, letter: Char): Int {
     val order = alphabet(sort)
     val target = order.indexOf(letter)
@@ -60,7 +60,7 @@ fun indexForLetter(groups: List<AppGroup>, sort: SortOrder, letter: Char): Int {
     for (group in groups) {
         val initial = group.label?.firstOrNull() ?: continue
         if (initial == letter || order.indexOf(initial) >= target) return cumulative
-        cumulative += 1 + group.apps.size
+        cumulative += group.apps.size
     }
     return -1
 }

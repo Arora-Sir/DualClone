@@ -89,7 +89,6 @@ import com.mohitarora.dualclone.ui.screen.home.AppList
 import com.mohitarora.dualclone.ui.screen.home.HomeActions
 import com.mohitarora.dualclone.ui.screen.home.HomeBanners
 import com.mohitarora.dualclone.ui.screen.home.HomeEmptyState
-import com.mohitarora.dualclone.ui.screen.home.ReconcileLine
 import com.mohitarora.dualclone.ui.screen.home.RowConfig
 import com.mohitarora.dualclone.ui.screen.home.groupApps
 import com.mohitarora.dualclone.ui.sheet.AppOpsSheet
@@ -278,14 +277,6 @@ fun HomeScreen(
                 clonedCount = state.clonedCount,
                 countsReady = !state.isLoading || state.totalCount > 0
             )
-            ReconcileLine(
-                atMillis = state.lastReconcile.atMillis,
-                ok = state.lastReconcile.ok,
-                problems = state.profiles.filter { it.kind != ProfileKind.PRIMARY && (it.isPaused || !it.isRunning) }.map {
-                    stringResource(if (it.isPaused) R.string.profile_problem_paused else R.string.profile_problem_stopped, stringResource(profileNameRes(it.kind)))
-                }
-            )
-
         }
         val body: @Composable () -> Unit = {
             val groups = remember(state.apps, state.sortOrder) { groupApps(state.apps, state.sortOrder) }

@@ -55,21 +55,6 @@ class RowConfig(
 )
 
 @Composable
-private fun GroupHeader(group: AppGroup, modifier: Modifier = Modifier) {
-    val text = group.label ?: stringResource(group.labelRes!!)
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleSmall,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = DcSpacing.lg, vertical = DcSpacing.xs)
-            .semantics { heading() }
-    )
-}
-
-@Composable
 private fun AppRow(app: AppItem, config: RowConfig, modifier: Modifier = Modifier) {
     val s = config.state
     val a = config.actions
@@ -90,11 +75,30 @@ private fun AppRow(app: AppItem, config: RowConfig, modifier: Modifier = Modifie
     )
 }
 
+@Composable
+private fun ListFooter(totalApps: Int, reconcileTime: Long, ok: Boolean) {
+    if (totalApps <= 0) return
+    val footerText = if (reconcileTime > 0L) {
+        val relative = reconcileText(reconcileTime, ok)
+        "$totalApps apps · $relative"
+    } else {
+        "$totalApps apps"
+    }
+    Text(
+        text = footerText,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = DcSpacing.md),
+        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+    )
+}
+
 /**
- * Phones and tablets under 840dp get a single column with sticky headers. At 840dp and wider the same
- * groups flow into an adaptive grid so a 14 inch tablet is not one stretched column.
+ * Phones and tablets under 840dp get a single column. At 840dp and wider the items flow
+ * into an adaptive grid so a 14 inch tablet is not one stretched column.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AppList(
     groups: List<AppGroup>,
@@ -108,11 +112,10 @@ fun AppList(
     val scope = rememberCoroutineScope()
     val expanded = LocalWindowWidthClass.current == WindowWidthSizeClass.Expanded
     val showRail = sort.isAlphabetical() && groups.isNotEmpty()
-    val railPadding = if (showRail) 28.dp else 0.dp
 
     Box(modifier = modifier.fillMaxSize()) {
         if (expanded) {
-            WideGrid(groups, config, gridState, contentPadding, railPadding)
+            WideGrid(groups, config, gridState, contentPadding)
             RailHost(showRail, sort) { letter ->
                 scope.launch {
                     val target = indexForLetter(groups, sort, letter)
@@ -120,7 +123,7 @@ fun AppList(
                 }
             }
         } else {
-            NarrowList(groups, config, listState, contentPadding, railPadding)
+            NarrowList(groups, config, listState, contentPadding)
             RailHost(showRail, sort) { letter ->
                 scope.launch {
                     val target = indexForLetter(groups, sort, letter)
@@ -131,27 +134,29 @@ fun AppList(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NarrowList(
     groups: List<AppGroup>,
     config: RowConfig,
     state: LazyListState,
-    contentPadding: PaddingValues,
-    railPadding: Dp
+    contentPadding: PaddingValues
 ) {
     LazyColumn(
         state = state,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(end = railPadding),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding
     ) {
         groups.forEach { group ->
-            stickyHeader(key = group.key) { GroupHeader(group) }
             items(items = group.apps, key = { it.packageName }) { app ->
                 AppRow(app, config, Modifier.animateItem())
             }
+        }
+        item(key = "narrow_list_footer") {
+            ListFooter(
+                totalApps = config.state.apps.size,
+                reconcileTime = config.state.lastReconcile.atMillis,
+                ok = config.state.lastReconcile.ok
+            )
         }
     }
 }
@@ -161,22 +166,25 @@ private fun WideGrid(
     groups: List<AppGroup>,
     config: RowConfig,
     state: LazyGridState,
-    contentPadding: PaddingValues,
-    railPadding: Dp
+    contentPadding: PaddingValues
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 380.dp),
         state = state,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(end = railPadding),
+        modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding
     ) {
         groups.forEach { group ->
-            item(key = group.key, span = { GridItemSpan(maxLineSpan) }) { GroupHeader(group) }
             items(items = group.apps, key = { it.packageName }) { app ->
                 AppRow(app, config, Modifier.animateItem())
             }
+        }
+        item(key = "wide_grid_footer", span = { GridItemSpan(maxLineSpan) }) {
+            ListFooter(
+                totalApps = config.state.apps.size,
+                reconcileTime = config.state.lastReconcile.atMillis,
+                ok = config.state.lastReconcile.ok
+            )
         }
     }
 }

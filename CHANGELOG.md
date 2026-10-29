@@ -10,6 +10,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.7] - 2026-10-30
+
+### Changed
+* Upgraded the alphabet scrollbar to an expandable fast-scroll rail. A sleek 4dp thumb rests quietly on the edge when idle and expands smoothly into the full alphabet rail with haptic feedback and a floating letter bubble upon touch and drag.
+* Removed the permanent 28dp list rail padding. App cards now expand to full screen width with symmetrical margins, eliminating app title and package name truncation.
+* Removed the diagnostic status line from the home screen header. Moved the quiet reconcile timestamp to the list footer at the very end of the app list.
+* Removed the persistent sticky section letter header from the list. App cards now start immediately beneath the segmented filter tabs, freeing vertical screen space.
+* Updated fast-scroll letter index mapping to accurately jump to the first app of each letter without header offset.
+
+---
+
 ## [1.0.6] - 2026-10-29
 
 ### Changed
