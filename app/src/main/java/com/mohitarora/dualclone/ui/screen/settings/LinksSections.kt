@@ -51,7 +51,7 @@ import com.mohitarora.dualclone.ui.external.ExternalIntents
 import com.mohitarora.dualclone.ui.external.ProjectLinks
 
 @Composable
-private fun OpenGlyph() {
+internal fun OpenGlyph() {
     Icon(
         imageVector = Icons.AutoMirrored.Filled.OpenInNew,
         contentDescription = stringResource(R.string.action_open),

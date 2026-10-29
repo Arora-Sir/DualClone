@@ -12,6 +12,9 @@ import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.filled.Link
+import com.mohitarora.dualclone.ui.external.ExternalIntents
+import com.mohitarora.dualclone.ui.external.ProjectLinks
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -84,6 +87,14 @@ fun UpdatesSection(
                     else -> Unit
                 }
             }
+        )
+        DcSettingsDivider()
+        DcSettingsRow(
+            title = stringResource(R.string.updates_obtainium_title),
+            subtitle = stringResource(R.string.updates_obtainium_summary),
+            icon = Icons.Default.Link,
+            onClick = { ExternalIntents.openUrl(context, ProjectLinks.obtainium) },
+            trailing = { OpenGlyph() }
         )
         DcSettingsDivider()
         DcSwitchRow(

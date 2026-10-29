@@ -445,6 +445,8 @@
     <string name="more_row_summary">Audit log, diagnostics and licenses</string>
     <string name="more_title">More</string>
     <string name="updates_badge_new">New</string>
+    <string name="updates_obtainium_title">Follow releases with Obtainium</string>
+    <string name="updates_obtainium_summary">Adds DualClone to Obtainium or ObtainX, which tell you about new releases</string>
     <string name="updates_daily_title">Check daily</string>
     <string name="updates_daily_summary">Looks for a new release once a day. It never downloads on its own.</string>
     <string name="updates_privacy_note">Updating is the only thing in DualClone that uses the internet. It talks only to GitHub, and only when you check for updates.</string>

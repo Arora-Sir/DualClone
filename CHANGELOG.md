@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+* A Follow releases with Obtainium row under Updates and about. One tap adds DualClone to Obtainium or ObtainX, which then tell you about new releases.
+
+### Changed
+* The Hilt navigation helper moved to its new package, which removes the deprecation warnings.
+
 ---
 
 ## [1.0.4] - 2026-10-29
