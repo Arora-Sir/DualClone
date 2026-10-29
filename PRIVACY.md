@@ -1,22 +1,22 @@
 # Privacy
 
-DualClone uses the internet for one thing: checking for and downloading its own updates. Everything else stays on your device.
+DualClone connects to the internet to check for and download updates from GitHub Releases. All package operations, profile management, and catalog queries execute locally on the device.
 
 ## What the network is used for
 
-* **Check for updates.** When you tap Check for updates, the app asks the GitHub Releases API (`api.github.com`) for the latest release of this project. If you turn on the daily check in Settings, it does the same once a day. The daily check is off by default.
-* **Download the update.** When you accept an update, the app downloads the signed APK and `SHA256SUMS.txt` from the GitHub release assets, and checks the APK against the SHA-256 in that file. Only then does it open the Android installer. Android checks the signing key before it installs.
+* **Check for updates.** When you tap Check for updates, the app queries the GitHub Releases API (`api.github.com`) for the latest release. An optional daily check runs once a day if enabled in Settings (off by default).
+* **Download the update.** When you accept an update, the app downloads the signed APK and `SHA256SUMS.txt` from GitHub release assets, and verifies the APK SHA-256 digest before launching the Android installer. Android checks the signing key before installing.
 
-These requests go to GitHub and to nothing else. GitHub sees the request the way any web server does, including your IP address, which DualClone cannot hide.
+These requests connect directly to GitHub. GitHub receives standard web server request headers, including your IP address.
 
-## What is never sent
+## Data handling
 
-* No analytics, crash reports, advertising or tracking of any kind.
-* No device or account identifiers.
-* No list of your installed apps, no clone list, no command log, no settings.
-* No cookies or login. The requests are anonymous.
+* Zero analytics, crash reporting, advertising, or telemetry libraries.
+* No collection of device identifiers, hardware serials, or user accounts.
+* No transmission of installed app catalogs, clone lists, command logs, or preferences.
+* Anonymous requests with no cookies or authentication required.
 
-## What stays on the device
+## Local data storage
 
 A local database holds:
 

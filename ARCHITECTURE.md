@@ -83,7 +83,7 @@ Knox blocks shell access to User 150. DualClone never sends a command to it. The
 
 ## Launcher ghosts
 
-After a verified removal in a managed or Dual Messenger profile, Samsung One UI Home can keep a stale icon. The package manager is already clean at that point, so DualClone cannot detect it. Settings offers Refresh launcher, which runs `am force-stop com.sec.android.app.launcher` through Shizuku on devices where that package exists. `scripts/device/ghost_probe.py` reproduces and diagnoses the case.
+After a verified removal in a work profile, Samsung One UI Home can keep a stale icon in the Work tab. The package manager state is already clean at that point, so DualClone cannot detect it. Settings offers Refresh launcher, which runs `am force-stop com.sec.android.app.launcher` through Shizuku on devices where that package exists, and an automatic restart toggle scoped strictly to work profiles. Dual Messenger removals do not trigger launcher restarts because Dual Messenger icons update cleanly via framework package broadcasts. `scripts/device/ghost_probe.py` reproduces and diagnoses the case.
 
 ## Design decisions
 
@@ -96,6 +96,11 @@ After a verified removal in a managed or Dual Messenger profile, Samsung One UI 
 * App cards use two lines so the app name gets the full width. The profile badge sits on the second line.
 * System apps are filtered on every tab, using both `FLAG_SYSTEM` and `FLAG_UPDATED_SYSTEM_APP`.
 * External links resolve the default browser first, so document apps that register for http links do not intercept them.
+* Launcher restart scoped to work profiles. Dual Messenger package changes broadcast cleanly through Samsung framework intents. Automatic launcher restarts are scoped strictly to work profile removals to avoid unnecessary home screen redraws.
+* Startup grace period for destination state. A 1500 millisecond grace window prevents empty profile guidance cards from flashing during cold boot before Shizuku profile discovery completes.
+* Expandable fast-scroll rail. A 4dp thumb when idle expands smoothly into the full alphabet rail with haptic feedback and a floating preview bubble only during touch and drag. App cards reclaim full horizontal width with zero rail padding, and system gesture exclusion is active only while dragging.
+* Direct list start without group headers. Group letter headers and top reconcile status are removed from the main column so cards start immediately beneath filter tabs. Quiet reconcile timestamps sit in the list footer.
+* Modal dialog button layout. Multi-action alert dialogs place dismiss buttons on the left and primary actions on the right with natural button widths and an expanding spacer, preventing label truncation when button labels exceed standard widths.
 
 ## Testing
 
@@ -133,13 +138,13 @@ The installed app list is cached in a local Room database, so the Home screen ha
 
 #### Local by default, network for updates only
 
-Everything DualClone does with your apps stays on the device. The network is used for one thing, checking GitHub Releases for a newer version and downloading it when you ask. That code sits in one package, and the build fails if network code appears anywhere else. See [docs/UPDATES.md](docs/UPDATES.md).
+Package operations and app catalog queries execute locally on the device. Network connectivity is restricted to querying GitHub Releases for signed APK updates and downloading them upon user request. All network operations reside in the `update` package, and `scripts/release/check_network_imports.py` fails the build if network imports appear anywhere else. See [docs/UPDATES.md](docs/UPDATES.md).
 
 #### Honest about platform limits
 
 * Knox Secure Folder blocks shell access. DualClone explains that and opens Secure Folder instead of failing with an error.
 * A paused work profile cannot receive package changes reliably. DualClone shows the state and warns first.
-* Samsung One UI Home can keep a stale icon after a clone is removed. DualClone offers a manual launcher refresh.
+* Samsung One UI Home can keep a stale icon after a clone is removed from a work profile. DualClone offers a manual launcher refresh and an automatic toggle scoped to work profiles.
 * Clones share the APK with the primary user, so there is nothing to update separately. Updating the host app updates every clone.
 
 #### Verified changes

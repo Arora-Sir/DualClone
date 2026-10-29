@@ -10,7 +10,7 @@ Thanks for helping. Bug reports, device test results and pull requests are welco
 
 ## Ground rules
 
-* Network use is limited to the updater in the `update` package. A change that adds network code elsewhere, another permission, a network library, analytics or crash reporting will not be merged. `scripts/release/check_network_imports.py` and the release permission allow-list enforce this.
+* Network calls reside strictly in the `update` package. A change that adds network code elsewhere, another permission, a network library, analytics or crash reporting will not be merged. `scripts/release/check_network_imports.py` and the release permission allow-list enforce this.
 * Keep changes small and focused. Match the style of the surrounding code.
 * All user-facing text goes in `strings.xml`. Hardcoded text in Compose code is rejected.
 * Every shell argument that comes from outside must pass `PackageValidator` or an allow-list.

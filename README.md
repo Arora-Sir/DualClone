@@ -24,6 +24,7 @@ Samsung One UI only lets you enable Dual Messenger for a short list of messaging
 * Clone and remove apps in Dual Messenger, a work profile (for example one created by Island) or another managed profile.
 * Removal is verified. After `pm uninstall` the app checks the package manager again before it reports success, and it asks for confirmation first because removing a clone deletes that clone's data.
 * Search, sort, and filter by All, Uncloned and Cloned. Bulk clone and remove with a per-app result list.
+* Fast-scroll alphabet rail that stays slim when idle and expands with a floating preview bubble during drag.
 * Special Access (AppOps) controls for a clone, such as All Files Access and Display over other apps.
 * Paused work profiles are detected and flagged before any operation.
 * DualClone never clones itself.
@@ -81,7 +82,7 @@ Shizuku stops when the device reboots unless you use a start-on-boot option. The
 3. Open the three dots on a clone for Special Access.
 4. To remove a clone, tap Remove and confirm. The original app in your main profile is not touched.
 
-After removing a clone, Samsung One UI Home sometimes keeps the old icon in the Work tab. DualClone shows a banner after a removal. Use Refresh launcher under Settings, Data to force it to redraw, or switch on the automatic refresh there.
+After removing a clone from a work profile, Samsung One UI Home sometimes keeps the old icon in the Work tab. Use Refresh launcher under Settings, Data to force it to redraw, or switch on the automatic refresh there. Dual Messenger clones update their icons automatically and do not require a launcher refresh.
 
 ## Limits
 
@@ -95,7 +96,7 @@ After removing a clone, Samsung One UI Home sometimes keeps the old icon in the 
 
 **Why does DualClone need Shizuku?** Installing an existing app into another profile is a privileged `pm` call. Shizuku lets an app run it as the shell user without root.
 
-**Is it safe?** The only network use is checking for and downloading updates. Nothing else leaves the device. Every shell argument is validated before it runs, and the log of what ran is on your device.
+**Is it safe?** DualClone connects to GitHub Releases to check for and download verified updates. App catalog queries, profile management, and command executions remain local to the device. Every shell argument is validated before execution, and all operations are recorded in the on-device command log.
 
 **Why does a cloned app ask me to sign in again?** A clone has separate app data, as Dual Messenger intends.
 
@@ -107,7 +108,7 @@ After removing a clone, Samsung One UI Home sometimes keeps the old icon in the 
 
 ## Privacy
 
-DualClone uses the internet for one thing, the update check and download. The check runs when you tap Check for updates, or once a day if you switch that on in Settings (off by default). It asks the GitHub Releases API for the latest version, and the app downloads the signed APK and verifies its SHA-256 before the system installer opens. No analytics, no identifiers and no list of your apps are sent. Everything else stays on the device. Details and the reason for every permission are in [PRIVACY.md](PRIVACY.md).
+DualClone connects to the internet to check for and download updates from GitHub Releases. The check runs manually when selected in Settings, or once daily if scheduled checks are enabled (disabled by default). The app queries the GitHub Releases API for the latest release tag, downloads the signed APK, and verifies its SHA-256 digest before launching the system package installer. The network client transmits no user identifiers, hardware serials, telemetry, or app inventory data. Full permission rationales are documented in [PRIVACY.md](PRIVACY.md).
 
 ## Build from source
 
