@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.height
@@ -29,6 +31,7 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -114,6 +117,47 @@ fun DcSwitchRow(
             Switch(checked = checked, onCheckedChange = null, enabled = enabled)
         }
     )
+}
+
+/**
+ * A switch row with a detail behind it. With [onOpen] set, a thin divider splits the row: the left part opens the detail
+ * and the right part is only the switch, so the two taps never look like one control. Without [onOpen] it is a plain [DcSwitchRow].
+ */
+@Composable
+fun DcSplitSwitchRow(
+    title: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    onOpen: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+    subtitle: String? = null,
+    icon: ImageVector? = null,
+    enabled: Boolean = true
+) {
+    if (onOpen == null) {
+        DcSwitchRow(title, checked, onCheckedChange, modifier, subtitle, icon, enabled)
+        return
+    }
+    Row(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min), verticalAlignment = Alignment.CenterVertically) {
+        DcSettingsRow(
+            title = title,
+            subtitle = subtitle,
+            icon = icon,
+            enabled = enabled,
+            onClick = onOpen,
+            modifier = Modifier.weight(1f)
+        )
+        VerticalDivider(modifier = Modifier.padding(vertical = DcSpacing.md), color = MaterialTheme.colorScheme.outlineVariant)
+        Box(
+            modifier = Modifier
+                .width(72.dp)
+                .fillMaxHeight()
+                .toggleable(value = checked, enabled = enabled, role = Role.Switch, onValueChange = onCheckedChange),
+            contentAlignment = Alignment.Center
+        ) {
+            Switch(checked = checked, onCheckedChange = null, enabled = enabled)
+        }
+    }
 }
 
 /** Equal width segments with a 48dp minimum height. Labels stay on one line. */

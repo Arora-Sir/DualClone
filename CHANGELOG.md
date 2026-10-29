@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.4] - 2026-10-29
+
+### Changed
+* The Pure AMOLED black row now has a divider when it is on. Tap the left part to open Surface lift and use the switch on the right to turn it off. With Pure black off the whole row toggles as before.
+
+---
+
 ## [1.0.3] - 2026-10-29
 
 ### Added

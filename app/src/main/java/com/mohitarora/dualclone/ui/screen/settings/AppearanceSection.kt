@@ -37,8 +37,7 @@ import com.mohitarora.dualclone.core.designsystem.components.DcDialog
 import com.mohitarora.dualclone.core.designsystem.components.DcStepPill
 import com.mohitarora.dualclone.core.designsystem.components.DcButton
 import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
-import com.mohitarora.dualclone.core.designsystem.components.DcSettingsRow
-import androidx.compose.material3.Switch
+import com.mohitarora.dualclone.core.designsystem.components.DcSplitSwitchRow
 import com.mohitarora.dualclone.ui.sheet.AccentPickerSheet
 import com.mohitarora.dualclone.ui.theme.ThemeConfig
 import com.mohitarora.dualclone.ui.theme.ThemeMode
@@ -119,7 +118,7 @@ fun AppearanceSection(
         }
         DcSettingsDivider()
         val liftActive = isDark && theme.isPureBlack
-        DcSettingsRow(
+        DcSplitSwitchRow(
             title = stringResource(R.string.appearance_amoled_title),
             subtitle = if (liftActive) {
                 stringResource(R.string.appearance_lift_summary, liftLevelText(theme.surfaceLift))
@@ -127,11 +126,10 @@ fun AppearanceSection(
                 stringResource(if (isDark) R.string.appearance_amoled_summary else R.string.appearance_amoled_disabled)
             },
             icon = Icons.Default.DarkMode,
-            enabled = isDark,
-            onClick = { if (liftActive) showLift = true else actions.onPureBlackChange(!theme.isPureBlack) },
-            trailing = {
-                Switch(checked = theme.isPureBlack, onCheckedChange = actions.onPureBlackChange, enabled = isDark)
-            }
+            checked = theme.isPureBlack,
+            onCheckedChange = actions.onPureBlackChange,
+            onOpen = if (liftActive) ({ showLift = true }) else null,
+            enabled = isDark
         )
     }
 
