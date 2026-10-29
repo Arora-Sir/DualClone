@@ -2,13 +2,9 @@ package com.mohitarora.dualclone.ui.screen.settings
 
 import kotlin.math.roundToInt
 import com.mohitarora.dualclone.ui.theme.DEFAULT_SURFACE_LIFT
-import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
-import com.mohitarora.dualclone.core.designsystem.components.DcButton
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.Slider
 import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -37,7 +33,11 @@ import com.mohitarora.dualclone.core.designsystem.components.DcPaletteCell
 import com.mohitarora.dualclone.core.designsystem.components.DcSegmentedControl
 import com.mohitarora.dualclone.core.designsystem.components.DcSettingsDivider
 import com.mohitarora.dualclone.core.designsystem.components.DcSettingsGroup
-import com.mohitarora.dualclone.core.designsystem.components.DcSwitchRow
+import com.mohitarora.dualclone.core.designsystem.components.DcDialog
+import com.mohitarora.dualclone.core.designsystem.components.DcStepPill
+import com.mohitarora.dualclone.core.designsystem.components.DcDialogAction
+import com.mohitarora.dualclone.core.designsystem.components.DcSettingsRow
+import androidx.compose.material3.Switch
 import com.mohitarora.dualclone.ui.sheet.AccentPickerSheet
 import com.mohitarora.dualclone.ui.theme.ThemeConfig
 import com.mohitarora.dualclone.ui.theme.ThemeMode
@@ -54,6 +54,7 @@ fun AppearanceSection(
     val context = LocalContext.current
     val isDark = theme.mode.resolveDark()
     var showPicker by rememberSaveable { mutableStateOf(false) }
+    var showLift by rememberSaveable { mutableStateOf(false) }
 
     val wallpaperSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val wallpaperColor = remember(isDark, wallpaperSupported) {
@@ -116,19 +117,25 @@ fun AppearanceSection(
             )
         }
         DcSettingsDivider()
-        DcSwitchRow(
+        val liftActive = isDark && theme.isPureBlack
+        DcSettingsRow(
             title = stringResource(R.string.appearance_amoled_title),
-            subtitle = stringResource(if (isDark) R.string.appearance_amoled_summary else R.string.appearance_amoled_disabled),
+            subtitle = if (liftActive) {
+                stringResource(R.string.appearance_lift_summary, liftLevelText(theme.surfaceLift))
+            } else {
+                stringResource(if (isDark) R.string.appearance_amoled_summary else R.string.appearance_amoled_disabled)
+            },
             icon = Icons.Default.DarkMode,
-            checked = theme.isPureBlack,
             enabled = isDark,
-            onCheckedChange = actions.onPureBlackChange
+            onClick = { if (liftActive) showLift = true else actions.onPureBlackChange(!theme.isPureBlack) },
+            trailing = {
+                Switch(checked = theme.isPureBlack, onCheckedChange = actions.onPureBlackChange, enabled = isDark)
+            }
         )
-        // NOTE: The lift only matters for Pure black, so the row appears when that switch is on and the screen is dark.
-        if (isDark && theme.isPureBlack) {
-            DcSettingsDivider()
-            SurfaceLiftRow(lift = theme.surfaceLift, onChange = actions.onSurfaceLiftChange)
-        }
+    }
+
+    if (showLift) {
+        SurfaceLiftDialog(lift = theme.surfaceLift, onChange = actions.onSurfaceLiftChange, onDismiss = { showLift = false })
     }
 
     if (showPicker) {
@@ -150,26 +157,25 @@ fun AppearanceSection(
 
 /** A slider from flat to lifted cards. The recommended position is the Super-Artemis Pure black look. */
 @Composable
-private fun SurfaceLiftRow(lift: Int, onChange: (Int) -> Unit) {
-    Column(modifier = Modifier.padding(horizontal = DcSpacing.lg, vertical = DcSpacing.md)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.appearance_lift_title),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.weight(1f)
-            )
-            Text(
-                text = if (lift == DEFAULT_SURFACE_LIFT) stringResource(R.string.appearance_lift_recommended) else lift.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+private fun SurfaceLiftDialog(lift: Int, onChange: (Int) -> Unit, onDismiss: () -> Unit) {
+    DcDialog(
+        onDismiss = onDismiss,
+        title = stringResource(R.string.appearance_lift_title),
+        actions = {
+            DcDialogAction(text = stringResource(R.string.appearance_lift_reset), onClick = { onChange(DEFAULT_SURFACE_LIFT) })
+            DcDialogAction(text = stringResource(R.string.action_done), onClick = onDismiss)
         }
-        val label = stringResource(R.string.appearance_lift_title)
-        Slider(
-            value = lift.toFloat(),
-            onValueChange = { onChange(it.roundToInt()) },
-            valueRange = 0f..100f,
-            modifier = Modifier.semantics { contentDescription = label }
+    ) {
+        val step = (lift / 10f).roundToInt().coerceIn(0, 10)
+        val valueText = liftLevelText(lift)
+        Text(text = valueText, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        DcStepPill(
+            value = step,
+            steps = 10,
+            onValueChange = { onChange(it * 10) },
+            description = stringResource(R.string.appearance_lift_title),
+            valueText = valueText,
+            modifier = Modifier.padding(vertical = DcSpacing.sm)
         )
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -184,11 +190,11 @@ private fun SurfaceLiftRow(lift: Int, onChange: (Int) -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        DcButton(
-            text = stringResource(R.string.appearance_lift_reset),
-            onClick = { onChange(DEFAULT_SURFACE_LIFT) },
-            style = DcButtonStyle.Text,
-            enabled = lift != DEFAULT_SURFACE_LIFT
-        )
     }
 }
+
+/** "Recommended" at the default step, otherwise "4 of 10". */
+@Composable
+private fun liftLevelText(lift: Int): String =
+    if (lift == DEFAULT_SURFACE_LIFT) stringResource(R.string.appearance_lift_recommended)
+    else stringResource(R.string.appearance_lift_step, (lift / 10f).roundToInt().coerceIn(0, 10))

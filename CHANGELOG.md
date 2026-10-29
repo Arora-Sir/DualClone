@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased]
 
 ### Added
-* Surface lift slider under Pure AMOLED black. It moves cards and raised surfaces from flat black to clearly lifted, with a Recommended default and a reset button. It is included in backups.
+* Surface lift under Pure AMOLED black. Tap the row to open a ten step pill that moves cards and raised surfaces from flat black to clearly lifted, with Recommended at step 5 and a reset action. It is included in backups.
 
 ### Fixed
 * The update sheet showed release notes as raw Markdown (hash signs and backticks). It now shows plain text with bullets.

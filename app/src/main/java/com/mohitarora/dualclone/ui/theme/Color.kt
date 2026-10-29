@@ -27,9 +27,9 @@ internal fun amoledLadder(lift: Int = DEFAULT_SURFACE_LIFT): AmoledLadder {
     }
     return AmoledLadder(
         black = Color(0xFF000000),
-        container = step(10, 13, 27),
-        high = step(16, 22, 42),
-        highest = step(24, 31, 52),
+        container = step(4, 13, 27),
+        high = step(8, 22, 42),
+        highest = step(12, 31, 52),
         outlineVariant = Color(0xFF333333)
     )
 }

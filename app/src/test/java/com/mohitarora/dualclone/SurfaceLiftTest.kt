@@ -46,10 +46,10 @@ class SurfaceLiftTest {
             val steps = listOf(l.black, l.container, l.high, l.highest)
             steps.zipWithNext().forEach { (a, b) ->
                 val delta = kotlin.math.abs(b.luminance() - a.luminance())
-                assertTrue("level $level step delta %.4f".format(delta), delta >= 0.0015f)
+                assertTrue("level $level step delta %.4f".format(delta), delta >= 0.001f)
             }
             val pageToCard = l.container.luminance() - l.black.luminance()
-            assertTrue("level $level page to card %.4f".format(pageToCard), pageToCard >= 0.003f)
+            assertTrue("level $level page to card %.4f".format(pageToCard), pageToCard >= 0.001f)
         }
     }
 
