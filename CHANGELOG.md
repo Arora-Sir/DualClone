@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+* The update sheet showed release notes as raw Markdown (hash signs and backticks). It now shows plain text with bullets.
+
 ---
 
 ## [1.0.2] - 2026-10-29

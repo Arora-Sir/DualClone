@@ -27,6 +27,7 @@ import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
 import com.mohitarora.dualclone.core.designsystem.components.DcCard
 import com.mohitarora.dualclone.core.designsystem.components.DcInfoCard
 import com.mohitarora.dualclone.core.designsystem.components.DcSheet
+import com.mohitarora.dualclone.update.ReleaseNotesText
 import com.mohitarora.dualclone.update.UpdateState
 
 /** Changelog, size and progress for one release. Download and Install are separate steps, so nothing installs unseen. */
@@ -106,7 +107,7 @@ private fun Changelog(text: String) {
     DcCard(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
         Column(modifier = Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState())) {
             Text(
-                text = text.ifBlank { stringResource(R.string.update_sheet_no_changelog) },
+                text = ReleaseNotesText.plain(text).ifBlank { stringResource(R.string.update_sheet_no_changelog) },
                 style = MaterialTheme.typography.bodyMedium
             )
         }

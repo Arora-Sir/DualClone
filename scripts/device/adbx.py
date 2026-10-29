@@ -63,7 +63,41 @@ class Device:
         match = re.search(r"lastUserActivityTime=(\d+)", self.sh("dumpsys power"))
         return uptime - int(match.group(1)) / 1000 if match else float("inf")
 
+    @staticmethod
+    def _is_pid_alive(pid: int) -> bool:
+        if pid <= 0:
+            return False
+        if sys.platform == "win32":
+            import ctypes
+            handle = ctypes.windll.kernel32.OpenProcess(0x1000, False, pid)
+            if not handle:
+                return False
+            try:
+                exit_code = ctypes.c_ulong()
+                if ctypes.windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(exit_code)):
+                    return exit_code.value == 259
+                return False
+            finally:
+                ctypes.windll.kernel32.CloseHandle(handle)
+        try:
+            os.kill(pid, 0)
+            return True
+        except (OSError, ProcessLookupError):
+            return False
+
     def preflight(self, min_idle_seconds: int = 60) -> None:
+        if self.serial.startswith("emulator-"):
+            lease = self.sh("getprop debug.fleet.lease", check=False).strip()
+            if lease and ":" in lease:
+                proj, pid_str = lease.split(":", 1)
+                try:
+                    holder_pid = int(pid_str)
+                    curr_pid = os.getpid()
+                    parent_pid = os.getppid() if hasattr(os, "getppid") else 0
+                    if holder_pid not in (curr_pid, parent_pid) and self._is_pid_alive(holder_pid):
+                        raise PreflightError(f"Emulator {self.serial} is currently leased by project '{proj}' (PID {holder_pid})")
+                except ValueError:
+                    pass
         focus = self.focus()
         if any(marker in focus for marker in STREAM_FOCUS_MARKERS):
             raise PreflightError(f"Device is streaming, refusing input ({focus})")
@@ -84,6 +118,18 @@ class Device:
             raise PreflightError(f"Device was used {idle:.0f}s ago, waiting for {min_idle_seconds}s of idle")
 
     def assert_not_streaming(self) -> None:
+        if self.serial.startswith("emulator-"):
+            lease = self.sh("getprop debug.fleet.lease", check=False).strip()
+            if lease and ":" in lease:
+                proj, pid_str = lease.split(":", 1)
+                try:
+                    holder_pid = int(pid_str)
+                    curr_pid = os.getpid()
+                    parent_pid = os.getppid() if hasattr(os, "getppid") else 0
+                    if holder_pid not in (curr_pid, parent_pid) and self._is_pid_alive(holder_pid):
+                        raise PreflightError(f"Emulator {self.serial} is currently leased by project '{proj}' (PID {holder_pid})")
+                except ValueError:
+                    pass
         focus = self.focus()
         if any(marker in focus for marker in STREAM_FOCUS_MARKERS):
             raise PreflightError(f"Stream window took focus mid-test ({focus})")
