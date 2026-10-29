@@ -35,7 +35,8 @@ import com.mohitarora.dualclone.core.designsystem.components.DcSettingsDivider
 import com.mohitarora.dualclone.core.designsystem.components.DcSettingsGroup
 import com.mohitarora.dualclone.core.designsystem.components.DcDialog
 import com.mohitarora.dualclone.core.designsystem.components.DcStepPill
-import com.mohitarora.dualclone.core.designsystem.components.DcDialogAction
+import com.mohitarora.dualclone.core.designsystem.components.DcButton
+import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
 import com.mohitarora.dualclone.core.designsystem.components.DcSettingsRow
 import androidx.compose.material3.Switch
 import com.mohitarora.dualclone.ui.sheet.AccentPickerSheet
@@ -162,8 +163,9 @@ private fun SurfaceLiftDialog(lift: Int, onChange: (Int) -> Unit, onDismiss: () 
         onDismiss = onDismiss,
         title = stringResource(R.string.appearance_lift_title),
         actions = {
-            DcDialogAction(text = stringResource(R.string.appearance_lift_reset), onClick = { onChange(DEFAULT_SURFACE_LIFT) })
-            DcDialogAction(text = stringResource(R.string.action_done), onClick = onDismiss)
+            DcButton(text = stringResource(R.string.appearance_lift_reset), onClick = { onChange(DEFAULT_SURFACE_LIFT) }, style = DcButtonStyle.Outlined)
+            Spacer(Modifier.weight(1f))
+            DcButton(text = stringResource(R.string.action_done), onClick = onDismiss, style = DcButtonStyle.Tonal)
         }
     ) {
         val step = (lift / 10f).roundToInt().coerceIn(0, 10)

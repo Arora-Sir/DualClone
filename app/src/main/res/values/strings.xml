@@ -62,7 +62,7 @@
 <string name="appearance_lift_recommended">Recommended</string>
 <string name="appearance_lift_flat">Flat</string>
 <string name="appearance_lift_lifted">Lifted</string>
-<string name="appearance_lift_reset">Reset to recommended</string>
+<string name="appearance_lift_reset">Reset</string>
 <string name="appearance_lift_step">%1$d of 10</string>
 <string name="appearance_lift_summary">Surface lift: %1$s. Tap to adjust.</string>
 <string name="appearance_amoled_title">Pure AMOLED black</string>
