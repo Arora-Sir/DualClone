@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+---
+
+## [1.0.5] - 2026-10-29
+
 ### Added
 * A Follow releases with Obtainium row under Updates and about. One tap adds DualClone to Obtainium or ObtainX, which then tell you about new releases.
 
