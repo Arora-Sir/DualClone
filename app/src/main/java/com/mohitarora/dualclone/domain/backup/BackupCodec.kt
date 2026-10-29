@@ -16,7 +16,7 @@ data class BackupProfile(val userId: Int, val kind: ProfileKind, val clones: Lis
 
 data class BackupPreset(val kind: ProfileKind, val userId: Int, val packageName: String, val op: String, val mode: String)
 
-data class BackupTheme(val preset: String, val pureBlack: Boolean, val customColorHex: Long, val mode: String)
+data class BackupTheme(val preset: String, val pureBlack: Boolean, val customColorHex: Long, val mode: String, val surfaceLift: Int = 50)
 
 data class BackupModel(
     val createdAtMillis: Long,
@@ -185,7 +185,8 @@ object BackupCodec {
             m.theme?.let {
                 map["theme"] = linkedMapOf(
                     "preset" to it.preset, "pureBlack" to it.pureBlack,
-                    "customColorHex" to it.customColorHex, "mode" to it.mode
+                    "customColorHex" to it.customColorHex, "mode" to it.mode,
+                    "surfaceLift" to it.surfaceLift
                 )
             }
             m.updateSettings?.let { map["updateSettings"] = linkedMapOf("dailyCheck" to it.dailyCheck) }
@@ -218,7 +219,8 @@ object BackupCodec {
                 preset = str(it, "preset"),
                 pureBlack = it["pureBlack"] as? Boolean ?: false,
                 customColorHex = it["customColorHex"] as? Long ?: 0L,
-                mode = it["mode"] as? String ?: "SYSTEM"
+                mode = it["mode"] as? String ?: "SYSTEM",
+                surfaceLift = ((it["surfaceLift"] as? Long)?.toInt() ?: 50).coerceIn(0, 100)
             )
         }
         return BackupModel(

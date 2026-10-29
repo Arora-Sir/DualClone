@@ -43,7 +43,8 @@ data class ThemeConfig(
     val preset: ThemePreset = ThemePreset.DEFAULT,
     val isPureBlack: Boolean = false,
     val customColorHex: Long = DEFAULT_CUSTOM_HEX,
-    val mode: ThemeMode = ThemeMode.SYSTEM
+    val mode: ThemeMode = ThemeMode.SYSTEM,
+    val surfaceLift: Int = DEFAULT_SURFACE_LIFT
 )
 
 // NOTE: Track A replaces this class with a Hilt ThemeRepository that exposes the same ThemeConfig StateFlow.
@@ -68,7 +69,8 @@ class ThemePreferences(context: Context) {
             preset = preset,
             isPureBlack = prefs.getBoolean(KEY_PURE_BLACK, false),
             customColorHex = prefs.getLong(KEY_CUSTOM_HEX, DEFAULT_CUSTOM_HEX),
-            mode = mode
+            mode = mode,
+            surfaceLift = prefs.getInt(KEY_SURFACE_LIFT, DEFAULT_SURFACE_LIFT).coerceIn(0, 100)
         )
     }
 
@@ -94,6 +96,12 @@ class ThemePreferences(context: Context) {
         _themeConfig.value = _themeConfig.value.copy(isPureBlack = isPureBlack)
     }
 
+    fun setSurfaceLift(lift: Int) {
+        val value = lift.coerceIn(0, 100)
+        prefs.edit().putInt(KEY_SURFACE_LIFT, value).apply()
+        _themeConfig.value = _themeConfig.value.copy(surfaceLift = value)
+    }
+
     fun setMode(mode: ThemeMode) {
         prefs.edit().putString(KEY_MODE, mode.name).apply()
         _themeConfig.value = _themeConfig.value.copy(mode = mode)
@@ -105,6 +113,7 @@ class ThemePreferences(context: Context) {
         private const val KEY_PURE_BLACK = "pure_black"
         private const val KEY_CUSTOM_HEX = "custom_color_hex"
         private const val KEY_MODE = "theme_mode"
+        private const val KEY_SURFACE_LIFT = "surface_lift"
 
         @Volatile
         private var instance: ThemePreferences? = null

@@ -24,5 +24,6 @@ class ThemeRepository @Inject constructor(@ApplicationContext context: Context) 
     fun setPreset(preset: ThemePreset) = prefs.setPreset(preset)
     fun setCustomColor(colorHex: Long) = prefs.setCustomColor(colorHex)
     fun setPureBlack(isPureBlack: Boolean) = prefs.setPureBlack(isPureBlack)
+    fun setSurfaceLift(lift: Int) = prefs.setSurfaceLift(lift)
     fun setMode(mode: ThemeMode) = prefs.setMode(mode)
 }

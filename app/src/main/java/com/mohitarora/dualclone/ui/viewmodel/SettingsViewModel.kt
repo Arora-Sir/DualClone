@@ -59,6 +59,7 @@ class SettingsViewModel @Inject constructor(
     fun setPreset(preset: ThemePreset) = theme.setPreset(preset)
     fun setCustomColor(colorHex: Long) = theme.setCustomColor(colorHex)
     fun setPureBlack(value: Boolean) = theme.setPureBlack(value)
+    fun setSurfaceLift(value: Int) = theme.setSurfaceLift(value)
     fun setMode(mode: ThemeMode) = theme.setMode(mode)
     fun setAutoRefreshLauncher(value: Boolean) = settings.setAutoRefreshLauncher(value)
     fun requestShizukuPermission() = shizuku.requestPermission()

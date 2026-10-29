@@ -36,6 +36,7 @@ class SettingsActions(
     val onPresetChange: (ThemePreset) -> Unit,
     val onApplyCustomColor: (Long) -> Unit,
     val onPureBlackChange: (Boolean) -> Unit,
+    val onSurfaceLiftChange: (Int) -> Unit,
     val onEnableDualMessenger: () -> Unit,
     val onClearAuditLog: () -> Unit,
     val onRequestShizukuPermission: () -> Unit,

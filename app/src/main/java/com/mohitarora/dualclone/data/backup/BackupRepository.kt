@@ -74,7 +74,7 @@ class BackupRepository(
                 appVersion = appVersion,
                 profiles = backupProfiles,
                 appOpsPresets = backupPresets,
-                theme = if (parts.settings) BackupTheme(t.preset.name, t.isPureBlack, t.customColorHex, t.mode.name) else null,
+                theme = if (parts.settings) BackupTheme(t.preset.name, t.isPureBlack, t.customColorHex, t.mode.name, t.surfaceLift) else null,
                 updateSettings = if (parts.settings) BackupUpdateSettings(dailyUpdateCheck()) else null,
                 parts = parts
             ),
@@ -118,6 +118,7 @@ class BackupRepository(
             ThemePreset.entries.firstOrNull { it.name == t.preset }?.let { theme.setPreset(it) }
             if (t.preset == ThemePreset.CUSTOM.name && t.customColorHex != 0L) theme.setCustomColor(t.customColorHex)
             theme.setPureBlack(t.pureBlack)
+            theme.setSurfaceLift(t.surfaceLift)
             ThemeMode.entries.firstOrNull { it.name == t.mode }?.let { theme.setMode(it) }
             themeApplied = true
         }

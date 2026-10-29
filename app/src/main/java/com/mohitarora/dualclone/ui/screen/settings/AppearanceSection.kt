@@ -1,5 +1,14 @@
 package com.mohitarora.dualclone.ui.screen.settings
 
+import kotlin.math.roundToInt
+import com.mohitarora.dualclone.ui.theme.DEFAULT_SURFACE_LIFT
+import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
+import com.mohitarora.dualclone.core.designsystem.components.DcButton
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Slider
 import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -115,6 +124,11 @@ fun AppearanceSection(
             enabled = isDark,
             onCheckedChange = actions.onPureBlackChange
         )
+        // NOTE: The lift only matters for Pure black, so the row appears when that switch is on and the screen is dark.
+        if (isDark && theme.isPureBlack) {
+            DcSettingsDivider()
+            SurfaceLiftRow(lift = theme.surfaceLift, onChange = actions.onSurfaceLiftChange)
+        }
     }
 
     if (showPicker) {
@@ -130,6 +144,51 @@ fun AppearanceSection(
                 showPicker = false
             },
             onDismiss = { showPicker = false }
+        )
+    }
+}
+
+/** A slider from flat to lifted cards. The recommended position is the Super-Artemis Pure black look. */
+@Composable
+private fun SurfaceLiftRow(lift: Int, onChange: (Int) -> Unit) {
+    Column(modifier = Modifier.padding(horizontal = DcSpacing.lg, vertical = DcSpacing.md)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.appearance_lift_title),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                text = if (lift == DEFAULT_SURFACE_LIFT) stringResource(R.string.appearance_lift_recommended) else lift.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        val label = stringResource(R.string.appearance_lift_title)
+        Slider(
+            value = lift.toFloat(),
+            onValueChange = { onChange(it.roundToInt()) },
+            valueRange = 0f..100f,
+            modifier = Modifier.semantics { contentDescription = label }
+        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.appearance_lift_flat),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(Modifier.weight(1f))
+            Text(
+                text = stringResource(R.string.appearance_lift_lifted),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        DcButton(
+            text = stringResource(R.string.appearance_lift_reset),
+            onClick = { onChange(DEFAULT_SURFACE_LIFT) },
+            style = DcButtonStyle.Text,
+            enabled = lift != DEFAULT_SURFACE_LIFT
         )
     }
 }

@@ -121,6 +121,7 @@ fun SettingsRoute(
             onPresetChange = vm::setPreset,
             onApplyCustomColor = vm::setCustomColor,
             onPureBlackChange = vm::setPureBlack,
+            onSurfaceLiftChange = vm::setSurfaceLift,
             onEnableDualMessenger = profilesVm::enableDualMessenger,
             onClearAuditLog = vm::clearAuditLog,
             onOpenDiagnostics = {},

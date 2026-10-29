@@ -44,9 +44,9 @@ fun DualCloneTheme(
     val target: ColorScheme =
         if (themeConfig.preset == ThemePreset.DYNAMIC_MONET && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // NOTE: The wallpaper scheme is the system's own tonal palette, left untouched except for the pure black surfaces.
-            if (darkTheme) dynamicDarkColorScheme(context).let { if (amoled) it.toAmoled() else it } else dynamicLightColorScheme(context)
+            if (darkTheme) dynamicDarkColorScheme(context).let { if (amoled) it.toAmoled(themeConfig.surfaceLift) else it } else dynamicLightColorScheme(context)
         } else {
-            buildColorScheme(themeConfig.preset, darkTheme, amoled, themeConfig.customColorHex)
+            buildColorScheme(themeConfig.preset, darkTheme, amoled, themeConfig.customColorHex, themeConfig.surfaceLift)
         }
 
     val reduceMotion = rememberReduceMotion()

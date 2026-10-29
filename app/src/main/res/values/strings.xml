@@ -58,7 +58,12 @@
     <string name="appearance_mode_title">Theme mode</string>
     <string name="appearance_palette_title">Color palette</string>
 <string name="appearance_palette_title_selected">Color palette: %1$s</string>
-    <string name="appearance_amoled_title">Pure AMOLED black</string>
+    <string name="appearance_lift_title">Surface lift</string>
+<string name="appearance_lift_recommended">Recommended</string>
+<string name="appearance_lift_flat">Flat</string>
+<string name="appearance_lift_lifted">Lifted</string>
+<string name="appearance_lift_reset">Reset to recommended</string>
+<string name="appearance_amoled_title">Pure AMOLED black</string>
     <string name="appearance_amoled_summary">True black backgrounds for OLED displays</string>
     <string name="appearance_amoled_disabled">Available in dark mode only</string>
     <string name="custom_color_hue">Hue</string>

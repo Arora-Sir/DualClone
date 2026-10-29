@@ -26,7 +26,8 @@ fun buildColorScheme(
     preset: ThemePreset,
     dark: Boolean,
     amoled: Boolean,
-    customHex: Long = DEFAULT_CUSTOM_HEX
+    customHex: Long = DEFAULT_CUSTOM_HEX,
+    surfaceLift: Int = DEFAULT_SURFACE_LIFT
 ): ColorScheme {
     val source = Hct.fromInt(seedFor(preset, customHex).toArgb())
     // NOTE: Mono uses the monochrome scheme, because tonal spot on a grey seed would still pick a faint hue.
@@ -36,7 +37,7 @@ fun buildColorScheme(
         SchemeTonalSpot(source, dark, CONTRAST_STANDARD)
     }
     val colors = scheme.toColorScheme()
-    return if (dark && amoled) colors.toAmoled() else colors
+    return if (dark && amoled) colors.toAmoled(surfaceLift) else colors
 }
 
 private const val CONTRAST_STANDARD = 0.0
@@ -88,16 +89,19 @@ private fun DynamicScheme.toColorScheme(): ColorScheme {
  * Only the surface steps change. Every accent role keeps the tonal values, so contrast guarantees survive.
  * Also applied to the wallpaper scheme, which the system generates.
  */
-fun ColorScheme.toAmoled(): ColorScheme = copy(
-    background = AmoledSurfaces.black,
-    surface = AmoledSurfaces.black,
-    surfaceDim = AmoledSurfaces.black,
-    surfaceContainerLowest = AmoledSurfaces.black,
-    surfaceContainerLow = AmoledSurfaces.black,
-    surfaceContainer = AmoledSurfaces.container,
-    surfaceContainerHigh = AmoledSurfaces.high,
-    surfaceContainerHighest = AmoledSurfaces.highest,
-    surfaceBright = AmoledSurfaces.highest,
-    surfaceVariant = AmoledSurfaces.high,
-    outlineVariant = AmoledSurfaces.outlineVariant
-)
+fun ColorScheme.toAmoled(surfaceLift: Int = DEFAULT_SURFACE_LIFT): ColorScheme {
+    val ladder = amoledLadder(surfaceLift)
+    return copy(
+        background = ladder.black,
+        surface = ladder.black,
+        surfaceDim = ladder.black,
+        surfaceContainerLowest = ladder.black,
+        surfaceContainerLow = ladder.black,
+        surfaceContainer = ladder.container,
+        surfaceContainerHigh = ladder.high,
+        surfaceContainerHighest = ladder.highest,
+        surfaceBright = ladder.highest,
+        surfaceVariant = ladder.high,
+        outlineVariant = ladder.outlineVariant
+    )
+}
