@@ -62,12 +62,6 @@ fun ProfileSelectorRow(
             .fillMaxWidth()
             .padding(top = DcSpacing.xs)
     ) {
-        Text(
-            text = stringResource(R.string.profile_target_heading),
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = DcSpacing.lg, vertical = DcSpacing.xs)
-        )
         val listState = rememberLazyListState()
         val selectedIndex = profiles.indexOfFirst {
             if (it.kind == ProfileKind.SECURE_FOLDER) secureFolderActive else selectedUserId == it.userId

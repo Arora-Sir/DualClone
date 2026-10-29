@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.PauseCircle
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +16,6 @@ import com.mohitarora.dualclone.R
 import com.mohitarora.dualclone.core.designsystem.DcSpacing
 import com.mohitarora.dualclone.core.designsystem.DcTone
 import com.mohitarora.dualclone.core.designsystem.components.DcButton
-import com.mohitarora.dualclone.core.designsystem.components.DcButtonRow
 import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
 import com.mohitarora.dualclone.core.designsystem.components.DcInfoCard
 import com.mohitarora.dualclone.ui.viewmodel.HomeUiState
@@ -65,29 +63,6 @@ fun HomeBanners(state: HomeUiState, actions: HomeActions, profileLabel: String?)
                     onClick = actions.onRefresh,
                     style = DcButtonStyle.Tonal
                 )
-            }
-        }
-        if (state.showLauncherRefreshHint) {
-            DcInfoCard(
-                title = stringResource(R.string.banner_launcher_title),
-                body = stringResource(R.string.banner_launcher_body),
-                tone = DcTone.Info,
-                icon = Icons.Default.History,
-                modifier = BannerPadding
-            ) {
-                DcButtonRow {
-                    DcButton(
-                        text = stringResource(R.string.data_refresh_launcher_title),
-                        onClick = actions.onRefreshLauncher,
-                        modifier = Modifier.slot()
-                    )
-                    DcButton(
-                        text = stringResource(R.string.banner_dismiss),
-                        onClick = actions.onDismissLauncherHint,
-                        style = DcButtonStyle.Outlined,
-                        modifier = Modifier.slot()
-                    )
-                }
             }
         }
     }

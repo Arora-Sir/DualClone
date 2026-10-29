@@ -13,6 +13,7 @@ import com.mohitarora.dualclone.domain.model.CloneState
 import com.mohitarora.dualclone.domain.model.ListResult
 import com.mohitarora.dualclone.domain.model.OpResult
 import com.mohitarora.dualclone.domain.model.Profile
+import com.mohitarora.dualclone.domain.model.ProfileKind
 import com.mohitarora.dualclone.domain.policy.ProfilePolicy
 import com.mohitarora.dualclone.domain.repo.AppSettings
 import com.mohitarora.dualclone.domain.repo.CatalogRepository
@@ -21,8 +22,10 @@ import com.mohitarora.dualclone.shizuku.ShizukuManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -160,6 +163,11 @@ class HomeController(
 
     init {
         scope.launch {
+            shizuku.shizukuState.collect {
+                if (it is ShizukuState.Ready) profiles.refresh()
+            }
+        }
+        scope.launch {
             if (catalog.isEmpty()) catalog.refresh()
             catalogLoaded.value = true
             // NOTE: Package events only arrive while the app runs, so apps installed or removed in between need this pass on every start.
@@ -239,12 +247,26 @@ class HomeController(
             try {
                 if (app.isCloned) {
                     val result = clones.remove(app.packageName, profile.userId)
-                    events.send(
-                        UiEvent(
-                            if (result is OpResult.Success) Messages.removed(app.appName) else Messages.failure("Removing ${app.appName}", result)
-                        )
-                    )
-                    if (result is OpResult.Success) maybeAutoRefreshLauncher()
+                    if (result is OpResult.Success) {
+                        if (profile.kind == ProfileKind.WORK) {
+                            if (settings.autoRefreshLauncher.value) {
+                                events.send(UiEvent(Messages.removedWithRefresh(app.appName)))
+                                scheduleAutoRefreshLauncher()
+                            } else {
+                                events.send(
+                                    UiEvent(
+                                        message = Messages.removed(app.appName),
+                                        actionLabel = Messages.refreshLauncherAction(),
+                                        actionId = ACTION_REFRESH_LAUNCHER
+                                    )
+                                )
+                            }
+                        } else {
+                            events.send(UiEvent(Messages.removed(app.appName)))
+                        }
+                    } else {
+                        events.send(UiEvent(Messages.failure("Removing ${app.appName}", result)))
+                    }
                 } else {
                     val result = clones.clone(app.packageName, profile.userId)
                     events.send(
@@ -281,8 +303,18 @@ class HomeController(
                 val summary = BulkSummary(kind, profile.userId, results)
                 bulkSummary.value = summary
                 val verb = if (kind == BulkKind.CLONE) "Cloned" else "Removed"
-                events.send(UiEvent(Messages.bulkSummary(verb, results.map { it.packageName to it.result })))
-                if (kind == BulkKind.REMOVE && results.any { it.result is OpResult.Success }) maybeAutoRefreshLauncher()
+                val hasSuccess = results.any { it.result is OpResult.Success }
+                val offerRefresh = kind == BulkKind.REMOVE && hasSuccess && profile.kind == ProfileKind.WORK && !settings.autoRefreshLauncher.value
+                events.send(
+                    UiEvent(
+                        message = Messages.bulkSummary(verb, results.map { it.packageName to it.result }),
+                        actionLabel = if (offerRefresh) Messages.refreshLauncherAction() else null,
+                        actionId = if (offerRefresh) ACTION_REFRESH_LAUNCHER else null
+                    )
+                )
+                if (kind == BulkKind.REMOVE && hasSuccess && profile.kind == ProfileKind.WORK && settings.autoRefreshLauncher.value) {
+                    scheduleAutoRefreshLauncher()
+                }
             } finally {
                 operating.update { it - packages.toSet() }
             }
@@ -296,8 +328,20 @@ class HomeController(
         }
     }
 
-    private suspend fun maybeAutoRefreshLauncher() {
-        if (settings.autoRefreshLauncher.value) clones.refreshLauncher()
+    fun onEventAction(actionId: String) {
+        if (actionId == ACTION_REFRESH_LAUNCHER) {
+            refreshLauncher()
+        }
+    }
+
+    private var autoRefreshJob: Job? = null
+
+    private fun scheduleAutoRefreshLauncher() {
+        autoRefreshJob?.cancel()
+        autoRefreshJob = scope.launch {
+            delay(300L)
+            clones.refreshLauncher()
+        }
     }
 
     /** Returns the selected profile if operations are allowed, otherwise explains why and returns null. */
@@ -377,7 +421,8 @@ class HomeController(
         SortOrder.INSTALL_TIME -> apps.sortedByDescending { it.installTime }
     }
 
-    private companion object {
+    companion object {
+        const val ACTION_REFRESH_LAUNCHER = "refresh_launcher"
         val APP_OPS = listOf("MANAGE_EXTERNAL_STORAGE", "REQUEST_INSTALL_PACKAGES", "WRITE_SETTINGS", "SYSTEM_ALERT_WINDOW")
     }
 }

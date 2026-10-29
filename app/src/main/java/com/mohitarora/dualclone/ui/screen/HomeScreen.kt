@@ -8,6 +8,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import com.mohitarora.dualclone.ui.viewmodel.FilterTab
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,8 +76,8 @@ import com.mohitarora.dualclone.data.model.AppItem
 import com.mohitarora.dualclone.data.model.ShizukuState
 import com.mohitarora.dualclone.domain.model.Profile
 import com.mohitarora.dualclone.domain.model.ProfileKind
-import com.mohitarora.dualclone.ui.components.EmptyProfileCard
-import com.mohitarora.dualclone.ui.components.KnoxGuidanceCard
+import com.mohitarora.dualclone.ui.components.EmptyProfileGuidanceCard
+import com.mohitarora.dualclone.ui.dialog.KnoxGuidanceDialog
 import com.mohitarora.dualclone.ui.components.ProfileSelectorRow
 import com.mohitarora.dualclone.ui.components.SegmentedFilterBar
 import com.mohitarora.dualclone.ui.components.ShizukuGuidanceCard
@@ -117,7 +120,7 @@ fun HomeScreen(
 
     var showSetupSheet by rememberSaveable { mutableStateOf(showOnboarding) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
-    var showKnoxCard by rememberSaveable { mutableStateOf(false) }
+    var showKnoxDialog by rememberSaveable { mutableStateOf(false) }
     var pendingRemove by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmBulkRemove by rememberSaveable { mutableStateOf(false) }
 
@@ -129,6 +132,33 @@ fun HomeScreen(
     }
     val destinations = targets.filter { it.kind != ProfileKind.SECURE_FOLDER }
     val selected = state.selectedProfile
+
+    val listStateAll = rememberSaveable(selected?.userId, saver = LazyListState.Saver) { LazyListState() }
+    val listStateInstalled = rememberSaveable(selected?.userId, saver = LazyListState.Saver) { LazyListState() }
+    val listStateCloned = rememberSaveable(selected?.userId, saver = LazyListState.Saver) { LazyListState() }
+
+    val activeListState = when (state.filterTab) {
+        FilterTab.ALL -> listStateAll
+        FilterTab.INSTALLED -> listStateInstalled
+        FilterTab.CLONED -> listStateCloned
+    }
+
+    val gridStateAll = rememberSaveable(selected?.userId, saver = LazyGridState.Saver) { LazyGridState() }
+    val gridStateInstalled = rememberSaveable(selected?.userId, saver = LazyGridState.Saver) { LazyGridState() }
+    val gridStateCloned = rememberSaveable(selected?.userId, saver = LazyGridState.Saver) { LazyGridState() }
+
+    val activeGridState = when (state.filterTab) {
+        FilterTab.ALL -> gridStateAll
+        FilterTab.INSTALLED -> gridStateInstalled
+        FilterTab.CLONED -> gridStateCloned
+    }
+
+    LaunchedEffect(state.searchQuery) {
+        if (state.searchQuery.isNotBlank()) {
+            activeListState.scrollToItem(0)
+            activeGridState.scrollToItem(0)
+        }
+    }
     val actionsEnabled = state.shizukuState is ShizukuState.Ready && selected != null &&
         !state.isSelectedProfilePaused && !selected.isRestricted
     val profileLabel = selected?.let { stringResource(profileNameRes(it.kind)) }
@@ -219,21 +249,21 @@ fun HomeScreen(
                 onOpenSetup = { showSetupSheet = true },
                 onRequestPermission = actions.onRequestShizukuPermission
             )
-            if (destinations.isEmpty() && state.shizukuState is ShizukuState.Ready && !state.isLoading) {
-                EmptyProfileCard(isSamsung = isSamsung)
-            }
+            EmptyProfileGuidanceCard(
+                visible = destinations.isEmpty() && state.shizukuState is ShizukuState.Ready && !state.isLoading,
+                isSamsung = isSamsung
+            )
             HomeBanners(state = state, actions = actions, profileLabel = profileLabel)
             ProfileSelectorRow(
                 profiles = targets,
                 selectedUserId = selected?.userId,
                 onProfileSelected = {
-                    showKnoxCard = false
+                    showKnoxDialog = false
                     actions.onProfileSelected(it.userId)
                 },
-                onSecureFolderTapped = { showKnoxCard = !showKnoxCard },
-                secureFolderActive = showKnoxCard
+                onSecureFolderTapped = { showKnoxDialog = true },
+                secureFolderActive = showKnoxDialog
             )
-            AnimatedVisibility(visible = showKnoxCard) { KnoxGuidanceCard() }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.weight(1f)) { SearchField(query = state.searchQuery, onChange = actions.onSearchChange) }
                 IconButton(onClick = { showSortSheet = true }, modifier = Modifier.padding(end = DcSpacing.sm)) {
@@ -284,7 +314,7 @@ fun HomeScreen(
                 when {
                     state.apps.isEmpty() && state.isLoading -> DcSkeletonList(Modifier.padding(top = DcSpacing.sm))
                     state.apps.isEmpty() -> HomeEmptyState(state.filterTab, state.searchQuery, actions)
-                    else -> AppList(groups = groups, config = config)
+                    else -> AppList(groups = groups, config = config, listState = activeListState, gridState = activeGridState)
                 }
             }
         }
@@ -366,6 +396,9 @@ fun HomeScreen(
             onToggleUnclonedOnly = actions.onUnclonedOnlyChange,
             onDismiss = { showSortSheet = false }
         )
+    }
+    if (showKnoxDialog) {
+        KnoxGuidanceDialog(onDismiss = { showKnoxDialog = false })
     }
 }
 

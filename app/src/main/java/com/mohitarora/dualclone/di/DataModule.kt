@@ -99,8 +99,9 @@ object DataModule {
         hostPackages: HostPackages,
         profiles: ProfileRepository,
         host: HostIdentity,
-        clock: Clock
-    ): CloneStateRepository = CloneStateRepository(gateway, store, audit, hostPackages, profiles, host, clock)
+        clock: Clock,
+        settings: AppSettings
+    ): CloneStateRepository = CloneStateRepository(gateway, store, audit, hostPackages, profiles, host, clock, settings)
 
     @Provides @Singleton
     fun provideCloneRepository(impl: CloneStateRepository): CloneRepository = impl

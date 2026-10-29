@@ -38,4 +38,16 @@ class MessagesTest {
         val text = (Messages.profilePaused(Messages.profileLabel(p(ProfileKind.WORK, "Island"))) as UiText.Plain).value
         assertEquals("Work profile is paused. Resume it before cloning or removing apps.", text)
     }
+
+    @Test
+    fun removedWithRefreshFormat() {
+        val text = (Messages.removedWithRefresh("WhatsApp") as UiText.Plain).value
+        assertEquals("WhatsApp removed. Home screen refreshed", text)
+    }
+
+    @Test
+    fun refreshLauncherActionLabel() {
+        val text = (Messages.refreshLauncherAction() as UiText.Plain).value
+        assertEquals("Refresh launcher", text)
+    }
 }

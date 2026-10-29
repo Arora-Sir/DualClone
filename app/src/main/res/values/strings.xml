@@ -110,8 +110,8 @@
     <string name="data_orphans_summary">Find and remove clones whose original app is gone</string>
     <string name="data_refresh_launcher_title">Refresh launcher</string>
     <string name="data_refresh_launcher_summary">Restarts the home screen to clear stale icons</string>
-    <string name="data_auto_refresh_title">Refresh launcher after removals</string>
-    <string name="data_auto_refresh_summary">Restarts the home screen automatically when a clone is removed</string>
+    <string name="data_auto_refresh_title">Refresh Home Launcher after Clone removal</string>
+    <string name="data_auto_refresh_summary">Clears ghost icons left on Samsung One UI Home after removing a clone from a work profile</string>
     <string name="data_audit_title">Command audit log</string>
     <string name="data_audit_summary">View every Shizuku command DualClone ran</string>
     <string name="data_audit_clear_title">Clear command audit log</string>

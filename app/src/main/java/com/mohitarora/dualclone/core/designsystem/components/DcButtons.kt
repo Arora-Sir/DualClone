@@ -49,6 +49,7 @@ fun DcButton(
     modifier: Modifier = Modifier,
     style: DcButtonStyle = DcButtonStyle.Primary,
     enabled: Boolean = true,
+    contentPadding: PaddingValues = PaddingValues(horizontal = DcSpacing.lg, vertical = DcSpacing.sm),
     icon: (@Composable () -> Unit)? = null
 ) {
     val interaction = remember { MutableInteractionSource() }
@@ -56,7 +57,7 @@ fun DcButton(
     val buttonModifier = modifier
         .heightIn(min = DcSizes.minButtonHeight)
         .dcPressScale(interaction)
-    val padding = PaddingValues(horizontal = DcSpacing.lg, vertical = DcSpacing.sm)
+    val padding = contentPadding
     val content: @Composable RowScope.() -> Unit = {
         if (icon != null) {
             Box(Modifier.size(DcSizes.buttonIconSlot), contentAlignment = Alignment.Center) { icon() }

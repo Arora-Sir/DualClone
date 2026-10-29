@@ -23,6 +23,8 @@ object Messages {
 
     fun cloned(appName: String, profileName: String) = plain("Cloned $appName to $profileName")
     fun removed(appName: String) = plain("Removed the clone of $appName")
+    fun removedWithRefresh(appName: String) = plain("$appName removed. Home screen refreshed")
+    fun refreshLauncherAction() = plain("Refresh launcher")
     fun profileOwnerProtected() = plain("This app manages the profile. Removing it would delete the profile, so it is left alone")
     fun systemAppInProfile() = plain("This is a system app of the profile, not a clone, so it is left alone")
     fun shizukuNotReady() = plain("Shizuku is not ready")

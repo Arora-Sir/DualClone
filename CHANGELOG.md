@@ -10,6 +10,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.6] - 2026-10-29
+
+### Changed
+* Refresh Home Launcher after Clone removal is now available in Settings (off by default). When enabled, removing a clone from a work profile automatically restarts the home screen once, debounced after the last removal in a batch, clearing ghost icons left by Samsung One UI Home.
+* Removed the tall launcher refresh banner from the home screen. When automatic refresh is turned off, a bottom snackbar message offers a Refresh launcher action after work profile removals.
+* Launcher refresh hints and automatic restarts are now scoped strictly to work profiles. Dual Messenger and primary user removals never trigger launcher restarts.
+* Filter tabs (All, Uncloned, Cloned) now preserve their scroll positions independently, preventing tab switches from resetting or clamping scroll offsets.
+* Removed the redundant Clone into heading above profile chips for a cleaner home screen layout.
+* Added a centered Knox guidance dialog with inline actions when tapping the Secure Folder chip, explaining system restrictions without shifting the home screen layout.
+
+### Fixed
+* Fixed a one-second banner flash that occurred when removing an app with automatic launcher refresh enabled.
+* Fixed scroll position loss when switching between filter tabs on the home screen.
+* Fixed a brief guidance card flash during cold start by applying a grace period before displaying the empty profiles state.
+
+---
+
 ## [1.0.5] - 2026-10-29
 
 ### Added

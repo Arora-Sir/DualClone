@@ -100,6 +100,8 @@ fun AppList(
     groups: List<AppGroup>,
     config: RowConfig,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
+    gridState: LazyGridState = rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues(bottom = 96.dp)
 ) {
     val sort = config.state.sortOrder
@@ -110,7 +112,6 @@ fun AppList(
 
     Box(modifier = modifier.fillMaxSize()) {
         if (expanded) {
-            val gridState = rememberLazyGridState()
             WideGrid(groups, config, gridState, contentPadding, railPadding)
             RailHost(showRail, sort) { letter ->
                 scope.launch {
@@ -119,7 +120,6 @@ fun AppList(
                 }
             }
         } else {
-            val listState = rememberLazyListState()
             NarrowList(groups, config, listState, contentPadding, railPadding)
             RailHost(showRail, sort) { letter ->
                 scope.launch {

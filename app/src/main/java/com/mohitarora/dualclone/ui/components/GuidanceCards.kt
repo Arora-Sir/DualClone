@@ -39,7 +39,10 @@ private val CardPadding = Modifier.padding(horizontal = DcSpacing.lg, vertical =
 
 /** Shown when Samsung Secure Folder is tapped. It explains why cloning is not possible and opens the app itself. */
 @Composable
-fun KnoxGuidanceCard(modifier: Modifier = Modifier) {
+fun KnoxGuidanceCard(
+    modifier: Modifier = Modifier,
+    onDismiss: (() -> Unit)? = null
+) {
     val context = LocalContext.current
     DcInfoCard(
         title = stringResource(R.string.knox_title),
@@ -48,11 +51,26 @@ fun KnoxGuidanceCard(modifier: Modifier = Modifier) {
         icon = Icons.Default.Lock,
         modifier = modifier.then(CardPadding)
     ) {
-        DcButton(
-            text = stringResource(R.string.knox_open),
-            onClick = { ExternalIntents.openSecureFolder(context) },
-            style = DcButtonStyle.Tonal
-        )
+        if (onDismiss != null) {
+            DcButtonRow {
+                DcButton(
+                    text = stringResource(R.string.knox_open),
+                    onClick = { ExternalIntents.openSecureFolder(context) },
+                    style = DcButtonStyle.Tonal
+                )
+                DcButton(
+                    text = stringResource(R.string.banner_dismiss),
+                    onClick = onDismiss,
+                    style = DcButtonStyle.Outlined
+                )
+            }
+        } else {
+            DcButton(
+                text = stringResource(R.string.knox_open),
+                onClick = { ExternalIntents.openSecureFolder(context) },
+                style = DcButtonStyle.Tonal
+            )
+        }
     }
 }
 
@@ -74,6 +92,32 @@ fun EmptyProfileCard(isSamsung: Boolean, modifier: Modifier = Modifier) {
                 style = DcButtonStyle.Tonal
             )
         }
+    }
+}
+
+/** Shown when no clone target exists. The grace period prevents flashing during startup. */
+@Composable
+fun EmptyProfileGuidanceCard(
+    visible: Boolean,
+    isSamsung: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val reduceMotion = rememberReduceMotion()
+    var settled by remember { mutableStateOf(false) }
+    LaunchedEffect(visible) {
+        if (!visible) {
+            settled = false
+        } else {
+            delay(GUIDANCE_GRACE_MILLIS)
+            settled = true
+        }
+    }
+    AnimatedVisibility(
+        visible = settled,
+        enter = if (reduceMotion) EnterTransition.None else fadeIn(tween(DcMotion.standardMillis)) + expandVertically(),
+        exit = if (reduceMotion) ExitTransition.None else fadeOut(tween(DcMotion.fastMillis)) + shrinkVertically()
+    ) {
+        EmptyProfileCard(isSamsung = isSamsung, modifier = modifier)
     }
 }
 

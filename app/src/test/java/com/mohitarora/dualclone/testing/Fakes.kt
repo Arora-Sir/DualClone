@@ -79,9 +79,9 @@ class FakeClock(var nowMillis: Long = 1_000L) : Clock {
     override fun now(): Long = nowMillis
 }
 
-class InMemorySettings : AppSettings {
+class InMemorySettings(initialAuto: Boolean = false) : AppSettings {
     private val advanced = MutableStateFlow(false)
-    private val auto = MutableStateFlow(false)
+    private val auto = MutableStateFlow(initialAuto)
     private val selected = MutableStateFlow<Int?>(null)
     private val reconcile = MutableStateFlow(ReconcileStatus())
     override val showAdvancedUsers: StateFlow<Boolean> = advanced

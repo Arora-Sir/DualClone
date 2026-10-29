@@ -179,6 +179,31 @@ class CloneStateRepositoryTest {
     }
 
     @Test
+    fun removeInWorkProfileWithAutoRefreshOnSuppressesHint() = runBlocking {
+        val settings = com.mohitarora.dualclone.testing.InMemorySettings(initialAuto = true)
+        val autoRepo = CloneStateRepository(gateway, store, audit, hostPackages, profiles, host, clock, settings)
+        deviceHas(10, "com.android.settings", "com.whatsapp")
+        autoRepo.reconcile(10)
+        gateway.on("pm uninstall --user 10 com.whatsapp", "Success")
+        gateway.on("pm path --user 10 com.whatsapp", "", exitCode = 1)
+        val result = autoRepo.remove("com.whatsapp", 10)
+        assertEquals(OpResult.Success(verified = true), result)
+        assertFalse(autoRepo.launcherRefreshHint.value)
+    }
+
+    @Test
+    fun removeInDualMessengerNeverSetsLauncherRefreshHint() = runBlocking {
+        deviceHas(95, "com.android.settings", "com.whatsapp")
+        repo.reconcile(95)
+        gateway.on("pm uninstall --user 95 com.whatsapp", "Success")
+        gateway.on("pm path --user 95 com.whatsapp", "", exitCode = 1)
+        val result = repo.remove("com.whatsapp", 95)
+        assertEquals(OpResult.Success(verified = true), result)
+        assertNull(clones(95)["com.whatsapp"])
+        assertFalse(repo.launcherRefreshHint.value)
+    }
+
+    @Test
     fun removeKeepsStateWhenPackageIsStillPresent() = runBlocking {
         deviceHas(10, "com.android.settings", "com.whatsapp")
         repo.reconcile(10)

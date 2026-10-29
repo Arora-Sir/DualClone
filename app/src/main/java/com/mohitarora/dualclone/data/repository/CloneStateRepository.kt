@@ -16,6 +16,7 @@ import com.mohitarora.dualclone.domain.pm.PmOutputParser
 import com.mohitarora.dualclone.domain.pm.isUnavailable
 import com.mohitarora.dualclone.domain.policy.HostIdentity
 import com.mohitarora.dualclone.domain.policy.ProfilePolicy
+import com.mohitarora.dualclone.domain.repo.AppSettings
 import com.mohitarora.dualclone.domain.repo.Clock
 import com.mohitarora.dualclone.domain.repo.CloneRepository
 import com.mohitarora.dualclone.domain.repo.CloneStateStore
@@ -54,7 +55,8 @@ class CloneStateRepository(
     private val hostPackages: HostPackages,
     private val profiles: ProfileRepository,
     private val host: HostIdentity,
-    private val clock: Clock
+    private val clock: Clock,
+    private val settings: AppSettings? = null
 ) : CloneRepository {
 
     private val locks = ConcurrentHashMap<Int, Mutex>()
@@ -240,7 +242,9 @@ class CloneStateRepository(
             }
             store.remove(packageName, userId)
             generation(userId).incrementAndGet()
-            if (kindOf(userId) != ProfileKind.PRIMARY) _launcherRefreshHint.value = true
+            if (kindOf(userId) == ProfileKind.WORK && settings?.autoRefreshLauncher?.value != true) {
+                _launcherRefreshHint.value = true
+            }
             OpResult.Success(verified = verify == Verification.ABSENT)
         }
     }

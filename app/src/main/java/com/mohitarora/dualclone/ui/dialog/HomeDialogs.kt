@@ -3,9 +3,20 @@ package com.mohitarora.dualclone.ui.dialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import com.mohitarora.dualclone.core.designsystem.components.DcButton
+import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
+import com.mohitarora.dualclone.ui.external.ExternalIntents
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -126,5 +137,42 @@ fun BulkSummaryDialog(
                 }
             }
         }
+    }
+}
+
+/** Shown when Samsung Secure Folder is tapped. It explains why cloning is not possible and offers to open the app. */
+@Composable
+fun KnoxGuidanceDialog(
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    DcDialog(
+        onDismiss = onDismiss,
+        title = stringResource(R.string.knox_title),
+        icon = Icons.Default.Lock,
+        actions = {
+            DcButton(
+                text = stringResource(R.string.banner_dismiss),
+                onClick = onDismiss,
+                style = DcButtonStyle.Outlined,
+                contentPadding = PaddingValues(horizontal = DcSpacing.md, vertical = DcSpacing.sm)
+            )
+            Spacer(Modifier.weight(1f))
+            DcButton(
+                text = stringResource(R.string.knox_open),
+                onClick = {
+                    onDismiss()
+                    ExternalIntents.openSecureFolder(context)
+                },
+                style = DcButtonStyle.Tonal,
+                contentPadding = PaddingValues(horizontal = DcSpacing.md, vertical = DcSpacing.sm)
+            )
+        }
+    ) {
+        Text(
+            text = stringResource(R.string.knox_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

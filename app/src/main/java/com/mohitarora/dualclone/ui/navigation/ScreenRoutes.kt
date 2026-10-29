@@ -68,6 +68,7 @@ fun HomeRoute(onSettings: () -> Unit) {
             onToggleAppOp = vm::toggleAppOp,
             onRequestShizukuPermission = vm::requestShizukuPermission,
             onRefreshShizuku = vm::refreshShizukuStatus,
+            onEventAction = vm::onEventAction,
             onResume = vm::onResume
         )
     }
