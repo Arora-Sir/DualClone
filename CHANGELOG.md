@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+---
+
+## [1.0.3] - 2026-10-29
+
 ### Added
 * Surface lift under Pure AMOLED black. Tap the row to open a ten step pill that moves cards and raised surfaces from flat black to clearly lifted, with Recommended at step 5 and a reset action. It is included in backups.
 
