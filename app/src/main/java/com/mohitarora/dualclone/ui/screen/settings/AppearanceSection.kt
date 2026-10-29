@@ -156,7 +156,7 @@ fun AppearanceSection(
     }
 }
 
-/** A slider from flat to lifted cards. The recommended position is the Super-Artemis Pure black look. */
+/** Ten step pill from flat to lifted cards. Step 5 is the Super-Artemis Pure black look. */
 @Composable
 private fun SurfaceLiftDialog(lift: Int, onChange: (Int) -> Unit, onDismiss: () -> Unit) {
     DcDialog(
@@ -177,21 +177,8 @@ private fun SurfaceLiftDialog(lift: Int, onChange: (Int) -> Unit, onDismiss: () 
             onValueChange = { onChange(it * 10) },
             description = stringResource(R.string.appearance_lift_title),
             valueText = valueText,
-            modifier = Modifier.padding(vertical = DcSpacing.sm)
+            modifier = Modifier.padding(top = DcSpacing.xs)
         )
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.appearance_lift_flat),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.weight(1f))
-            Text(
-                text = stringResource(R.string.appearance_lift_lifted),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
     }
 }
 

@@ -60,8 +60,6 @@
 <string name="appearance_palette_title_selected">Color palette: %1$s</string>
     <string name="appearance_lift_title">Surface lift</string>
 <string name="appearance_lift_recommended">Recommended</string>
-<string name="appearance_lift_flat">Flat</string>
-<string name="appearance_lift_lifted">Lifted</string>
 <string name="appearance_lift_reset">Reset</string>
 <string name="appearance_lift_step">%1$d of 10</string>
 <string name="appearance_lift_summary">Surface lift: %1$s. Tap to adjust.</string>
