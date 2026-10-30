@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.mohitarora.dualclone"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.mohitarora.dualclone"
