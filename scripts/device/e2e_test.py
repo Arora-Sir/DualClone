@@ -80,6 +80,11 @@ def load_allowed(package: str) -> set[str]:
     return allowed
 
 
+def has_tab(texts: list[str], label: str) -> bool:
+    """A filter tab is its label and its count as two nodes in the current UI. The older single node form "All (12)" is accepted too."""
+    return any(t == label or t.startswith(f"{label} (") for t in texts)
+
+
 class Skip(Exception):
     """Raised inside a case when the precondition for it is not met on this device."""
 
@@ -196,7 +201,7 @@ class Suite:
     def go_home(self) -> None:
         for _ in range(4):
             nodes = self.nodes()
-            if any(n.text.startswith(TEXT["app_title"]) for n in nodes) and any(n.text.startswith("All (") for n in nodes):
+            if any(n.text.startswith(TEXT["app_title"]) for n in nodes) and has_tab([n.text for n in nodes], "All"):
                 return
             self.dev.back()
             time.sleep(0.6)
@@ -312,7 +317,7 @@ class Suite:
 
         def counts() -> str:
             texts = [n.text for n in state["nodes"]]
-            found = {label: any(t.startswith(f"{label} (") for t in texts) for label in ("All", "Uncloned", "Cloned")}
+            found = {label: has_tab(texts, label) for label in ("All", "Uncloned", "Cloned")}
             assert all(found.values()), f"Tabs found: {found}"
             return f"Tabs with live counts: {found}"
 
@@ -320,7 +325,7 @@ class Suite:
 
         def titles() -> str:
             skip = {TEXT["app_title"], TEXT["app_title"] + " Debug", "Ready", "Grant", "Setup", "Stopped", "Checking", "Uncloned", "#", "Clone", "Remove"}
-            names = [n.text for n in state["nodes"] if len(n.text) > 1 and n.text not in skip and not re.match(r"^(All|Uncloned|Cloned|System) \(", n.text)]
+            names = [n.text for n in state["nodes"] if len(n.text) > 1 and n.text not in skip and not re.match(r"^(All|Uncloned|Cloned|System) \(", n.text) and n.text not in ("All", "Uncloned", "Cloned") and not n.text.isdigit()]
             assert not any(t in ("A...", "...") for t in names), "Squashed titles detected"
             assert any(len(t) > 3 for t in names), "No readable app names on screen"
             return f"Readable titles, sample: {names[:3]}"
@@ -329,7 +334,7 @@ class Suite:
 
         def chips() -> str:
             texts = [n.text for n in state["nodes"]]
-            assert any(t.startswith("All (") for t in texts) and any(t.startswith("Uncloned (") for t in texts), "Filter tabs missing"
+            assert has_tab(texts, "All") and has_tab(texts, "Uncloned"), "Filter tabs missing"
             return "Filter tabs present"
 
         self.case("TC08", "Filter Chips Row", chips)
@@ -378,6 +383,8 @@ class Suite:
             field = next((n for n in self.nodes() if "Search" in n.text or "Search" in n.desc), None)
             if field is None:
                 raise Skip("Search field not found")
+            if "samsung" not in dev.sh("pm list packages", check=False).lower():
+                raise Skip("No package with samsung in its name on this device")
             self.tap(field, 0.5)
             dev.sh("input text samsung")
             time.sleep(1.0)
@@ -428,6 +435,12 @@ class Suite:
 
         def settings_navigation() -> str:
             self.go_home()
+            # NOTE: The header collapses when the list is scrolled, which hides the Settings icon. Scroll back to the top first.
+            width, height = self.screen
+            for _ in range(3):
+                dev.sh(f"input swipe {width // 2} {int(height * 0.35)} {width // 2} {int(height * 0.85)} 200", check=False)
+                time.sleep(0.4)
+            time.sleep(0.8)
             button = next((n for n in self.nodes() if n.desc == TEXT["settings_desc"]), None)
             assert button is not None, "Settings icon not found"
             self.tap(button, 1.0)
@@ -467,7 +480,8 @@ class Suite:
 
         def fatal_sweep() -> str:
             log = dev.sh("logcat -d -b crash", check=False)
-            lines = [l for l in log.splitlines() if "FATAL EXCEPTION" in l or f"Process: {self.package}" in l]
+            # NOTE: Only a crash of the app under test counts. The uiautomator shell tool can time out on a busy emulator and log its own FATAL EXCEPTION.
+            lines = [l for l in log.splitlines() if f"Process: {self.package}" in l]
             assert not lines, f"Crash in logcat: {lines[0][:120]}"
             return "No crash entries for the app"
 
