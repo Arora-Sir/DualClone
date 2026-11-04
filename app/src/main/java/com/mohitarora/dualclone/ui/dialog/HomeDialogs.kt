@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.mohitarora.dualclone.R
 import com.mohitarora.dualclone.core.designsystem.DcSpacing
@@ -137,6 +138,53 @@ fun BulkSummaryDialog(
                 }
             }
         }
+    }
+}
+
+/** One profile or scan problem that used to be a banner pushing the list down. Shown as a dialog so the layout never shifts. */
+data class HomeNotice(
+    val key: String,
+    val icon: ImageVector,
+    val title: String,
+    val body: String,
+    val actionLabel: String? = null,
+    val onAction: (() -> Unit)? = null
+)
+
+@Composable
+fun HomeNoticeDialog(notice: HomeNotice, onDismiss: () -> Unit) {
+    DcDialog(
+        onDismiss = onDismiss,
+        title = notice.title,
+        icon = notice.icon,
+        actions = {
+            val actionLabel = notice.actionLabel
+            val onAction = notice.onAction
+            val pad = PaddingValues(horizontal = DcSpacing.md, vertical = DcSpacing.sm)
+            // NOTE: With no other action, Dismiss is the main tonal button on the right. With an action, Dismiss steps back to the left as an outline.
+            if (actionLabel != null && onAction != null) {
+                DcButton(text = stringResource(R.string.banner_dismiss), onClick = onDismiss, style = DcButtonStyle.Outlined, contentPadding = pad)
+                Spacer(Modifier.weight(1f))
+                DcButton(
+                    text = actionLabel,
+                    onClick = {
+                        onDismiss()
+                        onAction()
+                    },
+                    style = DcButtonStyle.Tonal,
+                    contentPadding = pad
+                )
+            } else {
+                Spacer(Modifier.weight(1f))
+                DcButton(text = stringResource(R.string.banner_dismiss), onClick = onDismiss, style = DcButtonStyle.Tonal, contentPadding = pad)
+            }
+        }
+    ) {
+        Text(
+            text = notice.body,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 

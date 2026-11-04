@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Changed
+* Profile notices (a paused profile, a copy of DualClone inside a profile, and a failed profile scan) now open as a dialog like the Secure Folder one instead of a card that pushed the whole list down. Tapping the profile chip again reopens a dismissed notice.
+* Updated the build toolchain to compileSdk 37, Android Gradle Plugin 9.5.0, Gradle 9.8.2 and Kotlin 2.4.21, with 22 dependency updates.
+* Dependency update checks now run quarterly with a 7 day cooldown, and workflow action bumps arrive as one grouped pull request.
+
+### Fixed
+* Instrumented tests no longer fail with a coroutines version mismatch on the test classpath.
+* Debug builds are labelled DualClone Debug so they are not mistaken for the release app.
+
 ---
 
 ## [1.0.7] - 2026-10-30

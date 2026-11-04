@@ -3,7 +3,10 @@ updates:
   - package-ecosystem: gradle
     directory: /
     schedule:
-      interval: monthly
+      interval: quarterly
+    # NOTE: A release has to be at least a week old before Dependabot proposes it, so a bad release can be pulled upstream first.
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 3
     groups:
       minor-and-patch:
@@ -15,5 +18,11 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: monthly
+      interval: quarterly
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 3
+    # NOTE: One pull request for all workflow action bumps instead of one per action.
+    groups:
+      actions:
+        patterns: [ "*" ]

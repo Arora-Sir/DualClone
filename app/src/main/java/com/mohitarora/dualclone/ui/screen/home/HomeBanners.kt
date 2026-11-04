@@ -1,7 +1,6 @@
 package com.mohitarora.dualclone.ui.screen.home
 
 import android.text.format.DateUtils
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
@@ -14,58 +13,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.mohitarora.dualclone.R
 import com.mohitarora.dualclone.core.designsystem.DcSpacing
-import com.mohitarora.dualclone.core.designsystem.DcTone
-import com.mohitarora.dualclone.core.designsystem.components.DcButton
-import com.mohitarora.dualclone.core.designsystem.components.DcButtonStyle
-import com.mohitarora.dualclone.core.designsystem.components.DcInfoCard
+import com.mohitarora.dualclone.ui.dialog.HomeNotice
 import com.mohitarora.dualclone.ui.viewmodel.HomeUiState
 
-private val BannerPadding = Modifier.padding(horizontal = DcSpacing.lg, vertical = DcSpacing.xs)
-
-/** Situational cards above the list. Each one explains a state and offers its own action. */
+/** Situational notices for the selected profile. Each one is shown as a dialog, never as a card that shifts the list. */
 @Composable
-fun HomeBanners(state: HomeUiState, actions: HomeActions, profileLabel: String?) {
-    Column {
-        if (state.isSelectedProfilePaused && profileLabel != null) {
-            DcInfoCard(
-                title = stringResource(R.string.banner_paused_title),
-                body = stringResource(R.string.banner_paused_body, profileLabel),
-                tone = DcTone.Warning,
-                icon = Icons.Default.PauseCircle,
-                modifier = BannerPadding
-            )
-        }
-        state.hostCopyUserIds.forEach { userId ->
-            DcInfoCard(
-                title = stringResource(R.string.banner_host_copy_title),
-                body = stringResource(R.string.banner_host_copy_body, userId),
-                tone = DcTone.Error,
-                icon = Icons.Default.ErrorOutline,
-                modifier = BannerPadding
-            ) {
-                DcButton(
-                    text = stringResource(R.string.banner_host_copy_action),
-                    onClick = { actions.onRepairHostCopy(userId) },
-                    style = DcButtonStyle.Tonal
-                )
-            }
-        }
-        if (state.isCloneStateStale) {
-            DcInfoCard(
-                title = stringResource(R.string.banner_stale_title),
-                body = stringResource(R.string.banner_stale_body),
-                tone = DcTone.Info,
-                icon = Icons.Default.Info,
-                modifier = BannerPadding
-            ) {
-                DcButton(
-                    text = stringResource(R.string.action_retry),
-                    onClick = actions.onRefresh,
-                    style = DcButtonStyle.Tonal
-                )
-            }
-        }
+fun homeNotices(state: HomeUiState, actions: HomeActions, profileLabel: String?, selectedUserId: Int?): List<HomeNotice> {
+    val notices = mutableListOf<HomeNotice>()
+    if (state.isSelectedProfilePaused && profileLabel != null && selectedUserId != null) {
+        notices += HomeNotice(
+            key = "paused:$selectedUserId",
+            icon = Icons.Default.PauseCircle,
+            title = stringResource(R.string.banner_paused_title),
+            body = stringResource(R.string.banner_paused_body, profileLabel)
+        )
     }
+    state.hostCopyUserIds.forEach { userId ->
+        notices += HomeNotice(
+            key = "hostcopy:$userId",
+            icon = Icons.Default.ErrorOutline,
+            title = stringResource(R.string.banner_host_copy_title),
+            body = stringResource(R.string.banner_host_copy_body, userId),
+            actionLabel = stringResource(R.string.banner_host_copy_action),
+            onAction = { actions.onRepairHostCopy(userId) }
+        )
+    }
+    if (state.isCloneStateStale) {
+        notices += HomeNotice(
+            key = "stale",
+            icon = Icons.Default.Info,
+            title = stringResource(R.string.banner_stale_title),
+            body = stringResource(R.string.banner_stale_body),
+            actionLabel = stringResource(R.string.action_retry),
+            onAction = actions.onRefresh
+        )
+    }
+    return notices
 }
 
 /** "Updated just now" under a minute, otherwise a relative time such as "5 minutes ago". */

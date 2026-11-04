@@ -77,7 +77,9 @@ import com.mohitarora.dualclone.data.model.ShizukuState
 import com.mohitarora.dualclone.domain.model.Profile
 import com.mohitarora.dualclone.domain.model.ProfileKind
 import com.mohitarora.dualclone.ui.components.EmptyProfileGuidanceCard
+import com.mohitarora.dualclone.ui.dialog.HomeNoticeDialog
 import com.mohitarora.dualclone.ui.dialog.KnoxGuidanceDialog
+import com.mohitarora.dualclone.ui.screen.home.homeNotices
 import com.mohitarora.dualclone.ui.components.ProfileSelectorRow
 import com.mohitarora.dualclone.ui.components.SegmentedFilterBar
 import com.mohitarora.dualclone.ui.components.ShizukuGuidanceCard
@@ -87,7 +89,6 @@ import com.mohitarora.dualclone.ui.dialog.RemoveCloneDialog
 import com.mohitarora.dualclone.ui.external.ExternalIntents
 import com.mohitarora.dualclone.ui.screen.home.AppList
 import com.mohitarora.dualclone.ui.screen.home.HomeActions
-import com.mohitarora.dualclone.ui.screen.home.HomeBanners
 import com.mohitarora.dualclone.ui.screen.home.HomeEmptyState
 import com.mohitarora.dualclone.ui.screen.home.RowConfig
 import com.mohitarora.dualclone.ui.screen.home.groupApps
@@ -120,6 +121,7 @@ fun HomeScreen(
     var showSetupSheet by rememberSaveable { mutableStateOf(showOnboarding) }
     var showSortSheet by rememberSaveable { mutableStateOf(false) }
     var showKnoxDialog by rememberSaveable { mutableStateOf(false) }
+    var dismissedNotices by rememberSaveable { mutableStateOf("") }
     var pendingRemove by rememberSaveable { mutableStateOf<String?>(null) }
     var confirmBulkRemove by rememberSaveable { mutableStateOf(false) }
 
@@ -252,12 +254,13 @@ fun HomeScreen(
                 visible = destinations.isEmpty() && state.shizukuState is ShizukuState.Ready && !state.isLoading,
                 isSamsung = isSamsung
             )
-            HomeBanners(state = state, actions = actions, profileLabel = profileLabel)
             ProfileSelectorRow(
                 profiles = targets,
                 selectedUserId = selected?.userId,
                 onProfileSelected = {
                     showKnoxDialog = false
+                    // NOTE: Tapping a profile chip again reopens its notice, even after it was dismissed.
+                    dismissedNotices = dismissedNotices.split('|').filter { key -> key.isNotEmpty() && key != "paused:${it.userId}" }.joinToString("|")
                     actions.onProfileSelected(it.userId)
                 },
                 onSecureFolderTapped = { showKnoxDialog = true },
@@ -390,6 +393,19 @@ fun HomeScreen(
     }
     if (showKnoxDialog) {
         KnoxGuidanceDialog(onDismiss = { showKnoxDialog = false })
+    }
+    val notices = homeNotices(state, actions, profileLabel, selected?.userId)
+    val activeKeys = notices.map { it.key }
+    // NOTE: A notice that stops applying is forgotten, so it shows again the next time the same problem appears.
+    LaunchedEffect(activeKeys) {
+        dismissedNotices = dismissedNotices.split('|').filter { it in activeKeys }.joinToString("|")
+    }
+    val pending = notices.firstOrNull { it.key !in dismissedNotices.split('|') }
+    if (pending != null && !showKnoxDialog) {
+        HomeNoticeDialog(
+            notice = pending,
+            onDismiss = { dismissedNotices = (dismissedNotices.split('|').filter { it.isNotEmpty() } + pending.key).joinToString("|") }
+        )
     }
 }
 

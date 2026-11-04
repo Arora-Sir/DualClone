@@ -41,11 +41,11 @@ TEXT = {
     "app_title": "DualClone",
     "settings_desc": "Settings",
     "settings_titles": ("Settings", "Settings & About"),
-    "special_access_desc": "Special Access",
-    "special_access_header": "Special Access",
-    "special_access_op": "All Files Access",
-    "special_access_badges": ("Allowed", "Denied", "System Default"),
-    "dev_screen": "Developer Diagnostics",
+    "special_access_desc": "Special access for",
+    "special_access_header": "Special access in",
+    "special_access_op": "All files access",
+    "special_access_badges": ("Allowed", "Denied", "System default"),
+    "dev_screen": "Developer diagnostics",
     "paused_chip": "Paused",
     "version_row": "Version",
 }
@@ -196,7 +196,7 @@ class Suite:
     def go_home(self) -> None:
         for _ in range(4):
             nodes = self.nodes()
-            if any(n.text == TEXT["app_title"] for n in nodes) and any(n.text.startswith("All (") for n in nodes):
+            if any(n.text.startswith(TEXT["app_title"]) for n in nodes) and any(n.text.startswith("All (") for n in nodes):
                 return
             self.dev.back()
             time.sleep(0.6)
@@ -283,8 +283,8 @@ class Suite:
         state: dict[str, list[Node]] = {"nodes": self.nodes()}
 
         def title() -> str:
-            state["nodes"] = self.wait_nodes(lambda ns: any(n.text == TEXT["app_title"] for n in ns))
-            assert any(n.text == TEXT["app_title"] for n in state["nodes"]), "Title not found"
+            state["nodes"] = self.wait_nodes(lambda ns: any(n.text.startswith(TEXT["app_title"]) for n in ns))
+            assert any(n.text.startswith(TEXT["app_title"]) for n in state["nodes"]), "Title not found"
             return "Top bar title found"
 
         self.case("TC05", "Top App Bar Title", title)
@@ -319,7 +319,7 @@ class Suite:
         self.case("TC07", "Segmented Filter Live Counts", counts)
 
         def titles() -> str:
-            skip = {TEXT["app_title"], "Ready", "Grant", "Setup", "Stopped", "Checking", "Uncloned", "#", "Clone", "Remove"}
+            skip = {TEXT["app_title"], TEXT["app_title"] + " Debug", "Ready", "Grant", "Setup", "Stopped", "Checking", "Uncloned", "#", "Clone", "Remove"}
             names = [n.text for n in state["nodes"] if len(n.text) > 1 and n.text not in skip and not re.match(r"^(All|Uncloned|Cloned|System) \(", n.text)]
             assert not any(t in ("A...", "...") for t in names), "Squashed titles detected"
             assert any(len(t) > 3 for t in names), "No readable app names on screen"
@@ -400,7 +400,7 @@ class Suite:
         sheet: dict[str, list[Node]] = {}
 
         def special_access_sheet() -> str:
-            button = next((n for n in self.nodes() if n.desc == TEXT["special_access_desc"]), None)
+            button = next((n for n in self.nodes() if n.desc.startswith(TEXT["special_access_desc"])), None)
             if button is None:
                 raise Skip("No cloned app with a Special Access button on this tab")
             self.tap(button, 0.8)
@@ -418,7 +418,7 @@ class Suite:
                 raise Skip("Sheet did not open")
             texts = [n.text for n in sheet["nodes"]]
             badge = any(b in texts for b in TEXT["special_access_badges"])
-            storage = any("isolated profile sandbox" in t for t in texts)
+            storage = any("isolated profile" in t for t in texts)
             dev.back()
             time.sleep(0.8)
             assert badge, "No status badge in the sheet"
