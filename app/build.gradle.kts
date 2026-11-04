@@ -172,5 +172,9 @@ configurations.matching { it.name.contains("AndroidTest", ignoreCase = true) }.c
         if (requested.group == "org.jetbrains.kotlinx" && requested.name.startsWith("kotlinx-serialization")) {
             useVersion(libs.versions.kotlinx.serialization.get())
         }
+        // NOTE: kotlinx-coroutines-test 1.11 calls runBlockingK, which only exists in core 1.11, while the transitive core and android stay at 1.10.2 and throw NoSuchMethodError.
+        if (requested.group == "org.jetbrains.kotlinx" && requested.name.startsWith("kotlinx-coroutines")) {
+            useVersion(libs.versions.coroutines.get())
+        }
     }
 }
