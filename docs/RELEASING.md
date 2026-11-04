@@ -242,6 +242,6 @@ If the old key is lost or fully compromised, rotation cannot be proven. Generate
 
 * Build provenance. Add the `actions/attest-build-provenance` action to `release.yml` with `id-token: write` and `attestations: write`, attest `dist/DualClone-vX.Y.Z.apk`, and tell users to verify with `gh attestation verify`. Pin the action by SHA.
 * Reproducibility. Build the tag twice on clean runners and compare the unsigned APK contents. Fix timestamps and dependency versions until they match.
-* Dependency review. Enable Dependabot alerts and the dependency review action on pull requests.
+* Dependency review. Enable Dependabot alerts and the dependency review action on pull requests. Version update pull requests run quarterly with a 7 day cooldown, and workflow action bumps arrive as one grouped pull request. Security updates ignore the schedule.
 * Branch protection. Require the `Build` workflow and one review before merging to `main`.
 * Play App Signing does not apply. DualClone is not distributed through Google Play, so there is no upload key and the key described here is the only signing key.

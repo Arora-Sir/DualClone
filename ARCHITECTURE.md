@@ -100,6 +100,8 @@ After a verified removal in a work profile, Samsung One UI Home can keep a stale
 * Startup grace period for destination state. A 1500 millisecond grace window prevents empty profile guidance cards from flashing during cold boot before Shizuku profile discovery completes.
 * Expandable fast-scroll rail. A 4dp thumb when idle expands smoothly into the full alphabet rail with haptic feedback and a floating preview bubble only during touch and drag. App cards reclaim full horizontal width with zero rail padding, and system gesture exclusion is active only while dragging.
 * Direct list start without group headers. Group letter headers and top reconcile status are removed from the main column so cards start immediately beneath filter tabs. Quiet reconcile timestamps sit in the list footer.
+* Profile notices are dialogs. A paused profile, a copy of DualClone inside a profile and a failed profile scan open as a dialog styled like the Secure Folder one, so the list never shifts down. A notice shows once, stays dismissed while the problem lasts and returns when the problem returns or the profile chip is tapped again. A notice with no action shows one tonal Dismiss button on the right.
+* Debug builds are labelled DualClone Debug through a debug-only `app_name` string.
 * Modal dialog button layout. Multi-action alert dialogs place dismiss buttons on the left and primary actions on the right with natural button widths and an expanding spacer, preventing label truncation when button labels exceed standard widths.
 
 ## Testing

@@ -58,7 +58,7 @@ adb -s <serial> exec-out screencap -p > docs/screenshots/home.png
 | :--- | :--- |
 | `home.png` | Home with the Cloned tab and Shizuku Ready |
 | `settings.png` | Settings top of page |
-| `palette.png` | More colors sheet |
+| `palette.png` | More colors sheet with the custom color picker |
 
 ## Commit messages
 

@@ -5,8 +5,8 @@ How to build DualClone, run the tests and use the device scripts.
 ## Prerequisites
 
 * JDK 17 or newer (CI uses 21). Point `JAVA_HOME` at it.
-* Android SDK with platform 36 and a recent build-tools package. Set `ANDROID_HOME` or create `local.properties` with `sdk.dir`.
-* Gradle is provided by the wrapper (8.13). Do not install it separately.
+* Android SDK with platform 37 (compileSdk 37, targetSdk 36, minSdk 28) and a recent build-tools package. Set `ANDROID_HOME` or create `local.properties` with `sdk.dir`.
+* Gradle is provided by the wrapper (9.8.2, with Android Gradle Plugin 9.5.0 and Kotlin 2.4.21). Do not install it separately.
 * Python 3.10 or newer with Pillow for the device scripts (`pip install pillow`).
 * `adb` from Android platform-tools on `PATH`.
 
@@ -18,7 +18,7 @@ Do not put machine specific paths such as `org.gradle.java.home` in the reposito
 ./gradlew assembleDebug
 ```
 
-On Windows use `.\gradlew.bat`. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`. Its application id is `com.mohitarora.dualclone.debug`, so it installs next to a release build.
+On Windows use `.\gradlew.bat`. The debug APK is `app/build/outputs/apk/debug/app-debug.apk`. Its application id is `com.mohitarora.dualclone.debug`, so it installs next to a release build. The debug build is named DualClone Debug on the launcher and in the app, so it is never mistaken for the release app.
 
 The full local gate is the same as CI:
 

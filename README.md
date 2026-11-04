@@ -12,9 +12,9 @@ Clone any installed app into Samsung Dual Messenger or a work profile with one t
 
 <!-- Screenshots use demo data only. See the README screenshots section of CONTRIBUTING.md. -->
 <p>
-  <img src="docs/screenshots/home.png" alt="Home screen showing the cloned apps in Dual Messenger with the profile selector" width="240">
+  <img src="docs/screenshots/home.png" alt="Home screen with the Cloned tab open, showing three apps cloned into a work profile" width="240">
   <img src="docs/screenshots/settings.png" alt="Grouped settings page with theme mode, color palette and Pure AMOLED black" width="240">
-  <img src="docs/screenshots/palette.png" alt="More colors sheet with Rose, Red, Cyan, Mono and a custom color picker" width="240">
+  <img src="docs/screenshots/palette.png" alt="More colors sheet with the Rose, Red, Cyan, Green and Mono presets and the custom color picker with a color square, hue strip and hex field" width="240">
 </p>
 
 ## What it does
@@ -26,7 +26,7 @@ Samsung One UI only lets you enable Dual Messenger for a short list of messaging
 * Search, sort, and filter by All, Uncloned and Cloned. Bulk clone and remove with a per-app result list.
 * Fast-scroll alphabet rail that stays slim when idle and expands with a floating preview bubble during drag.
 * Special Access (AppOps) controls for a clone, such as All Files Access and Display over other apps.
-* Paused work profiles are detected and flagged before any operation.
+* Paused work profiles are detected before any operation, and a dialog explains the problem without moving the list.
 * DualClone never clones itself.
 * System apps and a profile owner such as Island are never listed as clones, and DualClone refuses to remove a profile owner.
 * Clones without a host app (orphans) are listed and can be removed.
