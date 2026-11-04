@@ -15,8 +15,8 @@ android {
         applicationId = "com.mohitarora.dualclone"
         minSdk = 28
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.0.7"
+        versionCode = 9
+        versionName = "1.0.8"
 
         testInstrumentationRunner = "com.mohitarora.dualclone.e2e.HiltTestRunner"
     }

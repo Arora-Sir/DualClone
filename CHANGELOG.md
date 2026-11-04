@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+---
+
+## [1.0.8] - 2026-11-04
+
 ### Changed
 * Profile notices (a paused profile, a copy of DualClone inside a profile, and a failed profile scan) now open as a dialog like the Secure Folder one instead of a card that pushed the whole list down. Tapping the profile chip again reopens a dismissed notice.
 * Updated the build toolchain to compileSdk 37, Android Gradle Plugin 9.5.0, Gradle 9.8.2 and Kotlin 2.4.21, with 22 dependency updates.
