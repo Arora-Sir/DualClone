@@ -198,7 +198,18 @@ class Suite:
         out = self.dev.sh(f"pm list packages --user {user}", check=False)
         return {line.split(":", 1)[1].strip() for line in out.splitlines() if line.startswith("package:")}
 
+    def scroll_top(self) -> None:
+        """The header collapses when the list is scrolled, which hides the tabs and the Settings icon. Swipe back to the top."""
+        width, height = self.screen
+        for _ in range(3):
+            self.dev.sh(f"input swipe {width // 2} {int(height * 0.35)} {width // 2} {int(height * 0.85)} 200", check=False)
+            time.sleep(0.4)
+        time.sleep(0.8)
+
     def go_home(self) -> None:
+        if self.package not in self.dev.focus():
+            self.dev.sh(f"am start -n {self.package}/{ACTIVITY_CLASS}", check=False)
+            time.sleep(4.0)
         for _ in range(4):
             nodes = self.nodes()
             if any(n.text.startswith(TEXT["app_title"]) for n in nodes) and has_tab([n.text for n in nodes], "All"):
@@ -399,14 +410,19 @@ class Suite:
             if clear:
                 self.tap(clear, 0.5)
                 return "Cleared with the clear button"
-            dev.back()
-            return "Left search with the back key"
+            # NOTE: Back with an empty search field leaves the app, so a run that never typed a query has nothing to clear.
+            raise Skip("No search text was entered, nothing to clear")
 
         self.case("TC11", "Clear Search", clear_search)
 
         sheet: dict[str, list[Node]] = {}
 
         def special_access_sheet() -> str:
+            # NOTE: The Special Access button only does something on a clone, so look at the Cloned tab.
+            self.scroll_top()
+            cloned_tab = next((n for n in self.nodes() if n.text == "Cloned"), None)
+            if cloned_tab is not None:
+                self.tap(cloned_tab, 1.2)
             button = next((n for n in self.nodes() if n.desc.startswith(TEXT["special_access_desc"])), None)
             if button is None:
                 raise Skip("No cloned app with a Special Access button on this tab")
@@ -435,12 +451,7 @@ class Suite:
 
         def settings_navigation() -> str:
             self.go_home()
-            # NOTE: The header collapses when the list is scrolled, which hides the Settings icon. Scroll back to the top first.
-            width, height = self.screen
-            for _ in range(3):
-                dev.sh(f"input swipe {width // 2} {int(height * 0.35)} {width // 2} {int(height * 0.85)} 200", check=False)
-                time.sleep(0.4)
-            time.sleep(0.8)
+            self.scroll_top()
             button = next((n for n in self.nodes() if n.desc == TEXT["settings_desc"]), None)
             assert button is not None, "Settings icon not found"
             self.tap(button, 1.0)
