@@ -22,7 +22,7 @@ fun homeNotices(state: HomeUiState, actions: HomeActions, profileLabel: String?,
     val notices = mutableListOf<HomeNotice>()
     if (state.isSelectedProfilePaused && profileLabel != null && selectedUserId != null) {
         notices += HomeNotice(
-            key = "paused:$selectedUserId",
+            key = NoticeDismissals.pausedKey(selectedUserId),
             icon = Icons.Default.PauseCircle,
             title = stringResource(R.string.banner_paused_title),
             body = stringResource(R.string.banner_paused_body, profileLabel)

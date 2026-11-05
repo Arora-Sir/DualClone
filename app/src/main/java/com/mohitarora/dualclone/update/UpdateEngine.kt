@@ -4,6 +4,9 @@ import com.mohitarora.dualclone.core.common.UiText
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -86,21 +89,32 @@ class UpdateEngine(
                 if (r == null) _state.value = failed(UpdateError.NOT_AVAILABLE)
                 return
             }
-            _state.value = UpdateState.Downloading(0f)
+            // NOTE: Null shows an indeterminate bar while the connection opens, instead of a bar stuck at 0 percent.
+            _state.value = UpdateState.Downloading(null)
             verifiedFile = null
             verifiedSha = null
             _state.value = try {
                 withContext(io) {
                     cleanupStale(keep = r.apkName)
-                    val expected = client.fetchExpectedSha256(r)
                     val part = File(updatesDir, r.apkName + ".part")
                     var lastPercent = -1
-                    client.downloadApk(r, part) { done, total ->
-                        val percent = if (total > 0) (done * 100 / total).toInt() else -1
-                        if (percent != lastPercent) {
-                            lastPercent = percent
-                            _state.value = UpdateState.Downloading(if (total > 0) done.toFloat() / total else null)
-                        }
+                    // NOTE: The checksum list and the APK connection are set up at the same time, which removes one redirect chain from the wait.
+                    // NOTE: No APK byte is stored until the list has arrived with a line for this APK, so a missing or bad list still stores nothing.
+                    val expected = coroutineScope {
+                        val sums = async { client.fetchExpectedSha256(r) }
+                        client.downloadApk(
+                            r,
+                            part,
+                            onProgress = { done, total ->
+                                val percent = if (total > 0) (done * 100 / total).toInt() else -1
+                                if (percent != lastPercent) {
+                                    lastPercent = percent
+                                    _state.value = UpdateState.Downloading(if (total > 0) done.toFloat() / total else null)
+                                }
+                            },
+                            beforeBody = { runBlocking { sums.await() } }
+                        )
+                        sums.await()
                     }
                     val actual = UpdateClient.sha256(part)
                     if (actual != expected) {

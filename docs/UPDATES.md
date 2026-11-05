@@ -9,7 +9,7 @@ DualClone updates itself from GitHub Releases. Obtainium and manual download are
 * Settings has a Check for updates action. It runs only when you tap it.
 * An optional daily check can be switched on in Settings. It is off by default.
 * A check asks the GitHub Releases API for the latest published release. Drafts and pre-releases are not returned. If the release is newer than the installed `versionName`, the app shows the release notes.
-* If you accept, the app downloads the APK and `SHA256SUMS.txt` to its cache, verifies the SHA-256 of the APK, and hands the file to the Android installer through a FileProvider. Android asks you to allow installs from DualClone the first time, and checks that the signing certificate matches the installed one.
+* If you accept, the app downloads the APK and `SHA256SUMS.txt` to its cache. It opens the APK connection while the checksum list loads, but stores no APK byte until the list has arrived with a line for the APK. It then verifies the SHA-256 of the APK and hands the file to the Android installer through a FileProvider. Android asks you to allow installs from DualClone the first time, and checks that the signing certificate matches the installed one.
 * A failed check, a missing asset, a checksum mismatch or a network error shows a message and installs nothing.
 * The app sends no identifiers and no package list. See [PRIVACY.md](../PRIVACY.md).
 

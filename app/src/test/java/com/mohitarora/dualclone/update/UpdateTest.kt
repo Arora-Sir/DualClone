@@ -23,7 +23,8 @@ class UpdateTest {
 
     private class FakeTransport : HttpTransport {
         val routes = mutableMapOf<String, (Long) -> HttpResponse>()
-        val requests = mutableListOf<Pair<String, Long>>()
+        // NOTE: The checksum list and the APK are requested from two threads at once.
+        val requests = java.util.concurrent.CopyOnWriteArrayList<Pair<String, Long>>()
         override fun open(url: String, rangeStart: Long): HttpResponse {
             requests.add(url to rangeStart)
             val route = routes[url] ?: throw IOException("no route for $url")
@@ -221,7 +222,36 @@ class UpdateTest {
         val e = availableEngine()
         e.download()
         assertEquals(UpdateError.NO_CHECKSUM, e.failure())
-        assertEquals(0, transport.requests.count { it.first.endsWith(".apk") })
+        // NOTE: The APK connection may already be open, but no byte of it may be stored.
+        assertTrue(dir.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test
+    fun missingChecksumListStoresNothing() = runBlocking {
+        serveDownloads()
+        transport.routes.remove("$base/v1.1.0/SHA256SUMS.txt")
+        val e = availableEngine()
+        e.download()
+        assertEquals(UpdateError.NETWORK, e.failure())
+        assertTrue(dir.listFiles().orEmpty().isEmpty())
+    }
+
+    @Test
+    fun apkConnectionOpensWhileTheChecksumListIsStillLoading() = runBlocking {
+        val apkOpened = java.util.concurrent.CountDownLatch(1)
+        var apkOpenedFirst = false
+        serveDownloads(apk = {
+            apkOpened.countDown()
+            resp(200, apkBytes)
+        })
+        transport.routes["$base/v1.1.0/SHA256SUMS.txt"] = {
+            apkOpenedFirst = apkOpened.await(5, java.util.concurrent.TimeUnit.SECONDS)
+            resp(200, "$apkSha  DualClone-v1.1.0.apk\n".toByteArray())
+        }
+        val e = availableEngine()
+        e.download()
+        assertTrue("The APK request should not wait for the checksum list", apkOpenedFirst)
+        assertEquals(UpdateState.Downloaded("1.1.0"), e.state.value)
     }
 
     @Test

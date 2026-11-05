@@ -102,6 +102,7 @@ After a verified removal in a work profile, Samsung One UI Home can keep a stale
 * Direct list start without group headers. Group letter headers and top reconcile status are removed from the main column so cards start immediately beneath filter tabs. Quiet reconcile timestamps sit in the list footer.
 * Profile notices are dialogs. A paused profile, a copy of DualClone inside a profile and a failed profile scan open as a dialog styled like the Secure Folder one, so the list never shifts down. A notice shows once, stays dismissed while the problem lasts and returns when the problem returns or the profile chip is tapped again. A notice with no action shows one tonal Dismiss button on the right.
 * Debug builds are labelled DualClone Debug through a debug-only `app_name` string.
+* The updater opens the APK connection while `SHA256SUMS.txt` loads, which removes one redirect chain from the wait before the first byte. `UpdateClient.downloadApk` takes a `beforeBody` hook that runs after the response headers and before any byte is stored, and `UpdateEngine` uses it to wait for the checksum list. The list is not fetched during the update check, because the check contacts only the GitHub API. The sheet shows an indeterminate bar until bytes flow.
 * Modal dialog button layout. Multi-action alert dialogs place dismiss buttons on the left and primary actions on the right with natural button widths and an expanding spacer, preventing label truncation when button labels exceed standard widths.
 
 ## Testing

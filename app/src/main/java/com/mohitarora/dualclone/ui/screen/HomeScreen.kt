@@ -79,6 +79,7 @@ import com.mohitarora.dualclone.domain.model.ProfileKind
 import com.mohitarora.dualclone.ui.components.EmptyProfileGuidanceCard
 import com.mohitarora.dualclone.ui.dialog.HomeNoticeDialog
 import com.mohitarora.dualclone.ui.dialog.KnoxGuidanceDialog
+import com.mohitarora.dualclone.ui.screen.home.NoticeDismissals
 import com.mohitarora.dualclone.ui.screen.home.homeNotices
 import com.mohitarora.dualclone.ui.components.ProfileSelectorRow
 import com.mohitarora.dualclone.ui.components.SegmentedFilterBar
@@ -260,7 +261,7 @@ fun HomeScreen(
                 onProfileSelected = {
                     showKnoxDialog = false
                     // NOTE: Tapping a profile chip again reopens its notice, even after it was dismissed.
-                    dismissedNotices = dismissedNotices.split('|').filter { key -> key.isNotEmpty() && key != "paused:${it.userId}" }.joinToString("|")
+                    dismissedNotices = NoticeDismissals.reopenPaused(dismissedNotices, it.userId)
                     actions.onProfileSelected(it.userId)
                 },
                 onSecureFolderTapped = { showKnoxDialog = true },
@@ -398,13 +399,13 @@ fun HomeScreen(
     val activeKeys = notices.map { it.key }
     // NOTE: A notice that stops applying is forgotten, so it shows again the next time the same problem appears.
     LaunchedEffect(activeKeys) {
-        dismissedNotices = dismissedNotices.split('|').filter { it in activeKeys }.joinToString("|")
+        dismissedNotices = NoticeDismissals.keepActive(dismissedNotices, activeKeys)
     }
-    val pending = notices.firstOrNull { it.key !in dismissedNotices.split('|') }
+    val pending = notices.firstOrNull { !NoticeDismissals.isDismissed(dismissedNotices, it.key) }
     if (pending != null && !showKnoxDialog) {
         HomeNoticeDialog(
             notice = pending,
-            onDismiss = { dismissedNotices = (dismissedNotices.split('|').filter { it.isNotEmpty() } + pending.key).joinToString("|") }
+            onDismiss = { dismissedNotices = NoticeDismissals.dismiss(dismissedNotices, pending.key) }
         )
     }
 }

@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Fixed
+* The in-app update download starts sooner. The APK connection now opens while the checksum list loads, so one redirect chain is no longer waited on first. No APK byte is stored until the checksum list has arrived with a line for the APK, and the install is still checked against it.
+* While the download connection opens, the update sheet shows an indeterminate bar instead of a bar stuck at 0 percent.
+
 ---
 
 ## [1.0.8] - 2026-11-04

@@ -68,8 +68,10 @@ class UpdateClient @Inject constructor(private val transport: HttpTransport) {
     /**
      * Downloads the APK to [dest]. A partial file is resumed with a Range request when the server supports it,
      * otherwise the download restarts. Progress is reported as bytes done and total (or -1).
+     * [beforeBody] runs once the response headers are in and before any byte is stored. It lets the caller finish
+     * a slower prerequisite, such as the checksum list, while the connection is already open. If it throws, nothing is written.
      */
-    fun downloadApk(release: ReleaseInfo, dest: File, onProgress: (done: Long, total: Long) -> Unit) {
+    fun downloadApk(release: ReleaseInfo, dest: File, onProgress: (done: Long, total: Long) -> Unit, beforeBody: () -> Unit = {}) {
         var offset = if (dest.exists()) dest.length() else 0L
         if (release.apkSizeBytes > 0 && offset > release.apkSizeBytes) {
             dest.delete()
@@ -99,6 +101,7 @@ class UpdateClient @Inject constructor(private val transport: HttpTransport) {
                 else -> -1L
             }
             if (total > MAX_APK_BYTES) throw UpdateException(UpdateError.TOO_LARGE, "APK is $total bytes")
+            beforeBody()
             dest.parentFile?.mkdirs()
             try {
                 FileOutputStream(dest, append).use { out ->
