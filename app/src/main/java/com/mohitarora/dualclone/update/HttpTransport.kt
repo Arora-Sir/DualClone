@@ -7,6 +7,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 /** One HTTP response. The caller owns the body stream and must close the response. */
 class HttpResponse(
@@ -37,6 +38,7 @@ interface HttpTransport {
 class UrlConnectionTransport @Inject constructor() : HttpTransport {
 
     override fun open(url: String, rangeStart: Long): HttpResponse {
+        val startedAt = System.nanoTime()
         val connection = URL(url).openConnection() as HttpURLConnection
         try {
             connection.instanceFollowRedirects = false
@@ -49,6 +51,8 @@ class UrlConnectionTransport @Inject constructor() : HttpTransport {
             connection.setRequestProperty("Accept-Encoding", "identity")
             if (rangeStart > 0) connection.setRequestProperty("Range", "bytes=$rangeStart-")
             val code = connection.responseCode
+            // NOTE: Debug builds only, because release builds plant no Timber tree. The host and the time are logged, never the URL, which can carry a signed token.
+            Timber.d("UpdateTiming hop host=%s code=%d ms=%d", connection.url.host, code, (System.nanoTime() - startedAt) / NANOS_PER_MILLI)
             val stream = if (code in 200..299) connection.inputStream else (connection.errorStream ?: emptyStream())
             return HttpResponse(
                 code = code,
@@ -70,5 +74,6 @@ class UrlConnectionTransport @Inject constructor() : HttpTransport {
         // NOTE: Measured on a real phone, 10 seconds made the download wait 11.5 seconds and 4 seconds made it 6.7 seconds. The read timeout is unchanged so slow transfers still finish.
         const val CONNECT_TIMEOUT_MILLIS = 4_000
         const val READ_TIMEOUT_MILLIS = 15_000
+        const val NANOS_PER_MILLI = 1_000_000L
     }
 }

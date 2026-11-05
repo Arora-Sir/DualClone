@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 
 /**
@@ -89,6 +90,7 @@ class UpdateEngine(
                 if (r == null) _state.value = failed(UpdateError.NOT_AVAILABLE)
                 return
             }
+            val downloadStartedAt = System.nanoTime()
             // NOTE: Null shows an indeterminate bar while the connection opens, instead of a bar stuck at 0 percent.
             _state.value = UpdateState.Downloading(null)
             verifiedFile = null
@@ -112,8 +114,12 @@ class UpdateEngine(
                                     _state.value = UpdateState.Downloading(if (total > 0) done.toFloat() / total else null)
                                 }
                             },
-                            beforeBody = { runBlocking { sums.await() } }
+                            beforeBody = {
+                                runBlocking { sums.await() }
+                                Timber.d("UpdateTiming headers and checksums ready ms=%d", elapsedMillis(downloadStartedAt))
+                            }
                         )
+                        Timber.d("UpdateTiming apk body done ms=%d", elapsedMillis(downloadStartedAt))
                         sums.await()
                     }
                     val actual = UpdateClient.sha256(part)
@@ -165,6 +171,8 @@ class UpdateEngine(
     }
 
     private fun failed(error: UpdateError) = UpdateState.Failed(error, toText(error))
+
+    private fun elapsedMillis(startedAt: Long): Long = (System.nanoTime() - startedAt) / 1_000_000L
 
     /** Deletes every file in the updates folder except the current target and its partial download. */
     private fun cleanupStale(keep: String?) {
