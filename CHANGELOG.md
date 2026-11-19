@@ -10,6 +10,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ---
 
+## [1.0.11] - 2026-11-19
+
+### Added
+* Dual Messenger clones that Samsung removes at boot are brought back. DualClone remembers the clones it created and, about 90 seconds after a reboot, re-installs the ones the system removed while the original app is still installed. The apps start empty because their data is deleted with the clone. Home also shows a Restore notice for any missing clone, and Settings, Data has a switch to turn the automatic restore off.
+
+* Settings, Data has an advanced switch, Keep clones through reboot. It switches Samsung's Dual App agent off for the primary user, so the agent never runs its boot cleanup and clones survive a reboot. The switch shows the real state of the agent, read back from the device, and is hidden on devices without the agent. Turning it off enables the agent again. While it is off the Samsung Dual Messenger settings and its app list sync may stop working.
+
+### Changed
+* The README explains why Samsung removes clones of store-installed apps in Dual Messenger at boot and what DualClone can and cannot do about it.
+
+---
+
 ## [1.0.10] - 2026-11-05
 
 ### Changed
