@@ -7,6 +7,7 @@ import com.mohitarora.dualclone.domain.model.ListResult
 import com.mohitarora.dualclone.domain.model.OpResult
 import com.mohitarora.dualclone.domain.model.PmErrorCode
 import com.mohitarora.dualclone.domain.model.ProfileKind
+import com.mohitarora.dualclone.domain.model.StoredClone
 import com.mohitarora.dualclone.domain.pm.CommandExit
 import com.mohitarora.dualclone.domain.policy.HostIdentity
 import com.mohitarora.dualclone.domain.repo.CommandOutput
@@ -297,5 +298,113 @@ class CloneStateRepositoryTest {
         assertTrue(repo.clone("com.x; rm -rf /", 95) is OpResult.Failure)
         assertTrue(repo.remove("not a package", 95) is OpResult.Failure)
         assertTrue(gateway.history.isEmpty())
+    }
+
+    private fun cloneInto(userId: Int, pkg: String) = runBlocking {
+        gateway.on("pm install-existing --user $userId $pkg", "Package $pkg installed for user: $userId")
+        gateway.on("pm path --user $userId $pkg", "package:/x/base.apk")
+        assertTrue(repo.clone(pkg, userId) is OpResult.Success)
+    }
+
+    @Test
+    fun aCloneThatVanishesFromDualMessengerIsKeptAsLostWithTheTimeItWasNoticed() = runBlocking {
+        cloneInto(95, "com.whatsapp")
+        deviceHas(95, "com.android.settings")
+        clock.nowMillis = 9_000L
+        assertEquals(ListResult.Loaded(1), repo.reconcile(95))
+        assertEquals(CloneState.LOST, clones(95)["com.whatsapp"]?.state)
+        assertEquals(9_000L, clones(95)["com.whatsapp"]?.verifiedAtMillis)
+
+        clock.nowMillis = 20_000L
+        repo.reconcile(95)
+        assertEquals(CloneState.LOST, clones(95)["com.whatsapp"]?.state)
+        assertEquals(9_000L, clones(95)["com.whatsapp"]?.verifiedAtMillis)
+    }
+
+    @Test
+    fun aLostCloneBecomesInstalledAgainWhenItReturns() = runBlocking {
+        cloneInto(95, "com.whatsapp")
+        deviceHas(95, "com.android.settings")
+        repo.reconcile(95)
+        deviceHas(95, "com.android.settings", "com.whatsapp")
+        repo.reconcile(95)
+        assertEquals(CloneState.INSTALLED, clones(95)["com.whatsapp"]?.state)
+    }
+
+    @Test
+    fun aVanishedCloneIsForgottenWhenTheOriginalAppIsGone() = runBlocking {
+        val noHost = CloneStateRepository(gateway, store, audit, FakeHostPackages(emptySet()), profiles, host, clock)
+        cloneInto(95, "com.whatsapp")
+        deviceHas(95, "com.android.settings")
+        noHost.reconcile(95)
+        assertNull(clones(95)["com.whatsapp"])
+    }
+
+    @Test
+    fun onlyClonesCreatedByDualCloneAreTrackedAsLost() = runBlocking {
+        deviceHas(95, "com.android.settings", "com.whatsapp")
+        repo.reconcile(95)
+        deviceHas(95, "com.android.settings")
+        repo.reconcile(95)
+        assertNull(clones(95)["com.whatsapp"])
+    }
+
+    @Test
+    fun aVanishedCloneInAWorkProfileIsNotTrackedBecauseManagersRemoveAppsOnPurpose() = runBlocking {
+        cloneInto(10, "com.whatsapp")
+        deviceHas(10, "com.android.settings")
+        repo.reconcile(10)
+        assertNull(clones(10)["com.whatsapp"])
+    }
+
+    @Test
+    fun removingACloneWithDualCloneDoesNotLeaveALostRow() = runBlocking {
+        cloneInto(95, "com.whatsapp")
+        gateway.on("pm uninstall --user 95 com.whatsapp", "Success")
+        gateway.on("pm path --user 95 com.whatsapp", "", exitCode = 1)
+        assertTrue(repo.remove("com.whatsapp", 95) is OpResult.Success)
+        deviceHas(95, "com.android.settings")
+        repo.reconcile(95)
+        assertNull(clones(95)["com.whatsapp"])
+    }
+
+    @Test
+    fun restoreLostReinstallsOnlyClonesLostSinceTheGivenTime() = runBlocking {
+        store.put(StoredClone("com.example.alpha", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 1_000L))
+        store.put(StoredClone("com.example.beta", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 8_000L))
+        gateway.on("pm install-existing --user 95 com.example.beta", "Package b installed for user: 95")
+        gateway.on("pm path --user 95", "package:/x/base.apk")
+        val result = repo.restoreLost(95, lostSinceMillis = 5_000L)
+        assertEquals(listOf("com.example.beta"), result.restored)
+        assertTrue(result.failed.isEmpty())
+        assertEquals(CloneState.INSTALLED, clones(95)["com.example.beta"]?.state)
+        assertEquals(CloneState.LOST, clones(95)["com.example.alpha"]?.state)
+        assertTrue(gateway.commandsStartingWith("pm install-existing --user 95 com.example.alpha").isEmpty())
+    }
+
+    @Test
+    fun restoreLostWithoutATimeRestoresEveryLostClone() = runBlocking {
+        store.put(StoredClone("com.example.alpha", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 1_000L))
+        store.put(StoredClone("com.example.beta", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 8_000L))
+        gateway.on("pm install-existing --user 95", "Package x installed for user: 95")
+        gateway.on("pm path --user 95", "package:/x/base.apk")
+        assertEquals(setOf("com.example.alpha", "com.example.beta"), repo.restoreLost(95).restored.toSet())
+    }
+
+    @Test
+    fun restoreLostReportsFailuresAndStopsWhenShizukuDisappears() = runBlocking {
+        store.put(StoredClone("com.example.alpha", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 8_000L))
+        store.put(StoredClone("com.example.beta", 95, CloneState.LOST, CloneOriginKind.DUALCLONE, 8_000L))
+        gateway.on("pm install-existing --user 95", "", exitCode = CommandExit.UNAVAILABLE)
+        val result = repo.restoreLost(95)
+        assertTrue(result.shizukuUnavailable)
+        assertTrue(result.restored.isEmpty())
+        assertEquals(1, gateway.commandsStartingWith("pm install-existing").size)
+
+        gateway.on("pm install-existing --user 95", "Failure [INSTALL_FAILED_USER_RESTRICTED]", exitCode = 1)
+        val failed = repo.restoreLost(95)
+        assertFalse(failed.shizukuUnavailable)
+        assertEquals(2, failed.failed.size)
+        assertEquals(CloneState.LOST, clones(95)["com.example.alpha"]?.state)
     }
 }

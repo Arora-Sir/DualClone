@@ -69,7 +69,8 @@ fun HomeRoute(onSettings: () -> Unit) {
             onRequestShizukuPermission = vm::requestShizukuPermission,
             onRefreshShizuku = vm::refreshShizukuStatus,
             onEventAction = vm::onEventAction,
-            onResume = vm::onResume
+            onResume = vm::onResume,
+            onRestoreLost = vm::restoreLostClones
         )
     }
     HomeScreen(
@@ -93,6 +94,8 @@ fun SettingsRoute(
     val theme by vm.themeConfig.collectAsStateWithLifecycle()
     val shizuku by vm.shizukuState.collectAsStateWithLifecycle()
     val autoRefresh by vm.autoRefreshLauncher.collectAsStateWithLifecycle()
+    val autoRestore by vm.autoRestoreClones.collectAsStateWithLifecycle()
+    val agentDisabled by vm.agentDisabled.collectAsStateWithLifecycle()
     val log by vm.auditLog.collectAsStateWithLifecycle()
     val reconcile by vm.lastReconcile.collectAsStateWithLifecycle()
     val profiles by profilesVm.state.collectAsStateWithLifecycle()
@@ -109,6 +112,8 @@ fun SettingsRoute(
         canSetUpDualMessenger = profiles.canSetUpDualMessenger,
         showAdvancedUsers = profiles.showAdvancedUsers,
         autoRefreshLauncher = autoRefresh,
+        autoRestoreClones = autoRestore,
+        agentDisabled = agentDisabled,
         auditLogCount = log.size,
         reconcileSummary = reconcileSummary(reconcile.atMillis, reconcile.ok),
         update = updateState,
@@ -138,6 +143,8 @@ fun SettingsRoute(
             onOpenOrphans = onOrphans,
             onRefreshLauncher = vm::refreshLauncher,
             onAutoRefreshLauncherChange = vm::setAutoRefreshLauncher,
+            onAutoRestoreClonesChange = vm::setAutoRestoreClones,
+            onAgentDisabledChange = vm::setAgentDisabled,
             onShowAdvancedUsersChange = profilesVm::setShowAdvancedUsers
         )
     }

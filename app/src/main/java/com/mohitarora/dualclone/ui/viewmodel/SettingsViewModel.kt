@@ -9,6 +9,7 @@ import com.mohitarora.dualclone.data.model.ShizukuState
 import com.mohitarora.dualclone.data.repository.AuditLogRepository
 import com.mohitarora.dualclone.data.repository.CloneStateRepository
 import com.mohitarora.dualclone.data.repository.Reconciler
+import com.mohitarora.dualclone.data.repository.SamsungAgentGuard
 import com.mohitarora.dualclone.data.repository.ThemeRepository
 import com.mohitarora.dualclone.domain.repo.AppSettings
 import com.mohitarora.dualclone.domain.repo.ReconcileStatus
@@ -36,7 +37,8 @@ class SettingsViewModel @Inject constructor(
     private val audit: AuditLogRepository,
     private val reconciler: Reconciler,
     private val clones: CloneStateRepository,
-    private val shizuku: ShizukuManager
+    private val shizuku: ShizukuManager,
+    private val agentGuard: SamsungAgentGuard
 ) : ViewModel() {
 
     private val eventChannel = UiEventChannel()
@@ -45,6 +47,18 @@ class SettingsViewModel @Inject constructor(
     val themeConfig: StateFlow<ThemeConfig> = theme.config
     val shizukuState: StateFlow<ShizukuState> = shizuku.shizukuState
     val autoRefreshLauncher: StateFlow<Boolean> = settings.autoRefreshLauncher
+    val autoRestoreClones: StateFlow<Boolean> = settings.autoRestoreClones
+
+    private val _agentDisabled = MutableStateFlow<Boolean?>(null)
+
+    /** True when Samsung's Dual App agent is switched off, null when the device has no such agent or Shizuku cannot tell. */
+    val agentDisabled: StateFlow<Boolean?> = _agentDisabled.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            shizuku.shizukuState.collect { if (it is ShizukuState.Ready) _agentDisabled.value = agentGuard.isDisabled() }
+        }
+    }
     val lastReconcile: StateFlow<ReconcileStatus> = settings.lastReconcile
 
     val auditLog: StateFlow<List<CommandLogEntry>> = audit.recent
@@ -62,6 +76,7 @@ class SettingsViewModel @Inject constructor(
     fun setSurfaceLift(value: Int) = theme.setSurfaceLift(value)
     fun setMode(mode: ThemeMode) = theme.setMode(mode)
     fun setAutoRefreshLauncher(value: Boolean) = settings.setAutoRefreshLauncher(value)
+    fun setAutoRestoreClones(value: Boolean) = settings.setAutoRestoreClones(value)
     fun requestShizukuPermission() = shizuku.requestPermission()
     fun refreshShizukuStatus() = shizuku.refreshStatus()
 
@@ -87,6 +102,14 @@ class SettingsViewModel @Inject constructor(
             } finally {
                 _isReconciling.value = false
             }
+        }
+    }
+
+    fun setAgentDisabled(disabled: Boolean) {
+        viewModelScope.launch {
+            val result = agentGuard.setDisabled(disabled)
+            _agentDisabled.value = agentGuard.isDisabled()
+            eventChannel.send(UiEvent(Messages.agentSwitched(disabled, result)))
         }
     }
 

@@ -30,6 +30,19 @@ object Messages {
     fun shizukuNotReady() = plain("Shizuku is not ready")
     fun profileRestricted() = plain("Samsung Knox Secure Folder blocks external shell commands. Open Secure Folder directly to manage apps.")
     fun profilePaused(profileName: String) = plain("$profileName is paused. Resume it before cloning or removing apps.")
+    fun lostClonesRestored(restored: Int, failed: Int, shizukuUnavailable: Boolean) = plain(
+        when {
+            shizukuUnavailable -> "Shizuku is not ready, nothing was restored"
+            failed > 0 -> "Restored $restored clones, $failed could not be restored"
+            else -> "Restored $restored clones"
+        }
+    )
+
+    fun agentSwitched(disabled: Boolean, result: OpResult): UiText = when (result) {
+        is OpResult.Success -> plain(if (disabled) "Samsung Dual App agent is off. Clones now survive a reboot" else "Samsung Dual App agent is back on")
+        else -> failure("Switching the Samsung Dual App agent", result)
+    }
+
     fun launcherRefreshed() = plain("Home screen restarted")
     fun launcherRefreshUnavailable() = plain("No Samsung launcher found, nothing to refresh")
     fun launcherRefreshFailed() = plain("Could not restart the home screen")

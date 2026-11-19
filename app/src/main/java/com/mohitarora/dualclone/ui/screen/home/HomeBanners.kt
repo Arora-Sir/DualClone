@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.mohitarora.dualclone.R
 import com.mohitarora.dualclone.core.designsystem.DcSpacing
@@ -36,6 +37,16 @@ fun homeNotices(state: HomeUiState, actions: HomeActions, profileLabel: String?,
             body = stringResource(R.string.banner_host_copy_body, userId),
             actionLabel = stringResource(R.string.banner_host_copy_action),
             onAction = { actions.onRepairHostCopy(userId) }
+        )
+    }
+    if (state.lostCloneCount > 0 && selectedUserId != null) {
+        notices += HomeNotice(
+            key = "lost:$selectedUserId",
+            icon = Icons.Default.Info,
+            title = stringResource(R.string.banner_lost_title),
+            body = pluralStringResource(R.plurals.banner_lost_body, state.lostCloneCount, state.lostCloneCount),
+            actionLabel = stringResource(R.string.banner_lost_action),
+            onAction = actions.onRestoreLost
         )
     }
     if (state.isCloneStateStale) {

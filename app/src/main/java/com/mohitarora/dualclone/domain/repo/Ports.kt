@@ -56,10 +56,14 @@ interface CatalogRepository {
 interface AppSettings {
     val showAdvancedUsers: StateFlow<Boolean>
     val autoRefreshLauncher: StateFlow<Boolean>
+
+    /** Re-installs Dual Messenger clones that the system removed during boot. On by default. */
+    val autoRestoreClones: StateFlow<Boolean>
     val selectedProfileId: StateFlow<Int?>
     val lastReconcile: StateFlow<ReconcileStatus>
     fun setShowAdvancedUsers(value: Boolean)
     fun setAutoRefreshLauncher(value: Boolean)
+    fun setAutoRestoreClones(value: Boolean)
     fun setSelectedProfileId(userId: Int?)
     fun setLastReconcile(status: ReconcileStatus)
 }

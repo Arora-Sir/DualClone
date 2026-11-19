@@ -34,8 +34,8 @@ Android backup is disabled (`allowBackup="false"`), so none of this is copied to
 | `INTERNET` | The update check and download described above. No other feature uses it |
 | `REQUEST_INSTALL_PACKAGES` | Lets the app hand the downloaded, verified APK to the Android installer. You still have to allow installs from DualClone and confirm the install |
 | `QUERY_ALL_PACKAGES` | The core function is to list every installed app so you can choose which to clone. A narrower package visibility query cannot express "all apps". The list is stored only on the device |
-| Shizuku API permissions (`moe.shizuku.manager.permission.API_V23`, `moe.shizuku.privileged.api.permission.API_V2` and the matching fork variants) | Let the app ask Shizuku to run `pm install-existing`, `pm uninstall` and `appops` commands |
-| `WAKE_LOCK`, `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED`, `FOREGROUND_SERVICE` | Merged in by the WorkManager library for periodic background work such as the local reconcile and the optional daily update check. The app posts no notifications for them |
+| Shizuku API permissions (`moe.shizuku.manager.permission.API_V23`, `moe.shizuku.privileged.api.permission.API_V2` and the matching fork variants) | Let the app ask Shizuku to run `pm install-existing`, `pm uninstall`, `appops` and, only when you switch it on in Settings, `pm disable-user` and `pm enable` for Samsung's Dual App agent |
+| `WAKE_LOCK`, `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED`, `FOREGROUND_SERVICE` | Merged in by the WorkManager library for periodic background work such as the local reconcile and the optional daily update check. `RECEIVE_BOOT_COMPLETED` also lets DualClone schedule a local restore of Dual Messenger clones after a reboot, which only talks to Shizuku and the on-device database. The app posts no notifications for them |
 
 Every release is checked against an exact allow-list of these permissions. A new permission fails the release build until it is reviewed.
 

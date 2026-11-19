@@ -18,6 +18,7 @@ class SharedPrefsAppSettings @Inject constructor(@ApplicationContext context: Co
 
     private val _advanced = MutableStateFlow(prefs.getBoolean(KEY_ADVANCED, false))
     private val _autoRefresh = MutableStateFlow(prefs.getBoolean(KEY_AUTO_REFRESH, false))
+    private val _autoRestore = MutableStateFlow(prefs.getBoolean(KEY_AUTO_RESTORE, true))
     private val _selected = MutableStateFlow(if (prefs.contains(KEY_SELECTED)) prefs.getInt(KEY_SELECTED, 0) else null)
     private val _reconcile = MutableStateFlow(
         ReconcileStatus(
@@ -29,6 +30,7 @@ class SharedPrefsAppSettings @Inject constructor(@ApplicationContext context: Co
 
     override val showAdvancedUsers: StateFlow<Boolean> = _advanced.asStateFlow()
     override val autoRefreshLauncher: StateFlow<Boolean> = _autoRefresh.asStateFlow()
+    override val autoRestoreClones: StateFlow<Boolean> = _autoRestore.asStateFlow()
     override val selectedProfileId: StateFlow<Int?> = _selected.asStateFlow()
     override val lastReconcile: StateFlow<ReconcileStatus> = _reconcile.asStateFlow()
 
@@ -40,6 +42,11 @@ class SharedPrefsAppSettings @Inject constructor(@ApplicationContext context: Co
     override fun setAutoRefreshLauncher(value: Boolean) {
         prefs.edit().putBoolean(KEY_AUTO_REFRESH, value).apply()
         _autoRefresh.value = value
+    }
+
+    override fun setAutoRestoreClones(value: Boolean) {
+        prefs.edit().putBoolean(KEY_AUTO_RESTORE, value).apply()
+        _autoRestore.value = value
     }
 
     override fun setSelectedProfileId(userId: Int?) {
@@ -61,6 +68,7 @@ class SharedPrefsAppSettings @Inject constructor(@ApplicationContext context: Co
     private companion object {
         const val KEY_ADVANCED = "show_advanced_users"
         const val KEY_AUTO_REFRESH = "auto_refresh_launcher"
+        const val KEY_AUTO_RESTORE = "auto_restore_clones"
         const val KEY_SELECTED = "selected_profile_id"
         const val KEY_RECONCILE_AT = "reconcile_at"
         const val KEY_RECONCILE_OK = "reconcile_ok"

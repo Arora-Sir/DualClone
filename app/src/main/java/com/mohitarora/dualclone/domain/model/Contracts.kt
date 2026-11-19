@@ -14,7 +14,8 @@ data class Profile(
     val isRestricted: Boolean = false
 )
 
-enum class CloneState { INSTALLED, HIDDEN, SUSPENDED, NOT_INSTALLED, UNKNOWN }
+/** LOST marks a clone that DualClone created and that the system removed afterwards, while the original app is still installed. */
+enum class CloneState { INSTALLED, HIDDEN, SUSPENDED, NOT_INSTALLED, UNKNOWN, LOST }
 
 enum class PmErrorCode {
     NOT_INSTALLED_FOR_USER,

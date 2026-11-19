@@ -41,6 +41,8 @@ data class HomeUiState(
     val showLauncherRefreshHint: Boolean = false,
     /** User ids that hold a copy of DualClone itself. The Home screen offers a repair. */
     val hostCopyUserIds: List<Int> = emptyList(),
+    /** Clones of the selected profile that the system removed while the original app is still installed. The Home screen offers a restore. */
+    val lostCloneCount: Int = 0,
     val operatingPackages: Set<String> = emptySet(),
     val activeAppOpsPackage: String? = null,
     val activeAppOpsState: Map<String, String> = emptyMap(),

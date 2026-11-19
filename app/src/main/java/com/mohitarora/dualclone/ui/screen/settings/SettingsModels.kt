@@ -19,6 +19,9 @@ data class SettingsUiState(
     val showAdvancedUsers: Boolean = false,
     val reconcileSummary: String? = null,
     val autoRefreshLauncher: Boolean = false,
+    val autoRestoreClones: Boolean = true,
+    /** Null hides the switch, because the device has no Samsung Dual App agent or Shizuku cannot tell. */
+    val agentDisabled: Boolean? = null,
     val auditLogCount: Int = 0,
     val update: UpdateState = UpdateState.Idle,
     val currentVersion: String = "",
@@ -47,6 +50,8 @@ class SettingsActions(
     val onOpenOrphans: (() -> Unit)? = null,
     val onRefreshLauncher: (() -> Unit)? = null,
     val onAutoRefreshLauncherChange: ((Boolean) -> Unit)? = null,
+    val onAutoRestoreClonesChange: ((Boolean) -> Unit)? = null,
+    val onAgentDisabledChange: ((Boolean) -> Unit)? = null,
     val onOpenLicenses: (() -> Unit)? = null,
     val onShowAdvancedUsersChange: ((Boolean) -> Unit)? = null,
     val onOpenMore: (() -> Unit)? = null,

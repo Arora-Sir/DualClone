@@ -88,6 +88,7 @@ After removing a clone from a work profile, Samsung One UI Home sometimes keeps 
 
 * Only the clone is created or removed. DualClone cannot copy app data between profiles, and backups cover your clone list and AppOps presets only. Reading another profile's app data needs root, which shell access does not provide.
 * Android blocks some removals through device policy. DualClone shows the reason instead of a raw error.
+* On Samsung devices the Dual App agent can remove Dual Messenger clones at boot, together with their data. DualClone can re-install them, or switch the agent off so nothing is removed, but it cannot bring deleted data back. Details are in the FAQ.
 * Shizuku has to be running for every clone, remove and AppOps operation. Browsing the catalog works without it.
 * Play Store distribution is not possible. DualClone depends on Shizuku and on listing every installed app (`QUERY_ALL_PACKAGES`), which Google Play policy does not allow for this kind of tool. Releases go to GitHub only.
 * English only. Hindi is not shipped yet.
@@ -99,6 +100,8 @@ After removing a clone from a work profile, Samsung One UI Home sometimes keeps 
 **Is it safe?** DualClone connects to GitHub Releases to check for and download verified updates. App catalog queries, profile management, and command executions remain local to the device. Every shell argument is validated before execution, and all operations are recorded in the on-device command log.
 
 **Why does a cloned app ask me to sign in again?** A clone has separate app data, as Dual Messenger intends.
+
+**A Dual Messenger clone disappeared after a reboot.** Samsung's Dual App agent (`com.samsung.android.da.daagent`) runs a cleanup when the device boots. Its code deletes launchable apps from the Dual Messenger profile unless they are on Samsung's whitelist or were installed through adb, and their data goes with them. This was read from the agent on a Galaxy Tab S10 Ultra (Android 17) and matched 16 test apps, see [issue 19](https://github.com/Arora-Sir/DualClone/issues/19). Other devices may differ. DualClone has two answers. By default it re-installs the removed clones about 90 seconds after boot (Settings, Data, Restore clones removed at boot), and Home offers a Restore button for any it finds missing. A restored app starts empty and asks you to sign in again. For clones that must keep their data, Settings, Data has an advanced switch, Keep clones through reboot. It switches the Dual App agent off through Shizuku, so the cleanup never runs. While it is off the Samsung Dual Messenger settings and its app list sync may stop working, and you can turn it back on at any time. A work profile is a third option, because store-installed clones in an Island work profile on the same tablet were not removed by the same reboots.
 
 **An icon stayed in the Work tab after I removed a clone.** The package manager state is already clean. Use Refresh launcher under Settings, Data.
 

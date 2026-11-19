@@ -15,7 +15,9 @@ import com.mohitarora.dualclone.data.db.RoomHostPackages
 import com.mohitarora.dualclone.data.prefs.SharedPrefsAppSettings
 import com.mohitarora.dualclone.data.repository.AppOpsRepositoryImpl
 import com.mohitarora.dualclone.data.repository.CloneStateRepository
+import com.mohitarora.dualclone.data.repository.BootRestorer
 import com.mohitarora.dualclone.data.repository.DualMessengerSetup
+import com.mohitarora.dualclone.data.repository.SamsungAgentGuard
 import com.mohitarora.dualclone.data.repository.OrphanRepository
 import com.mohitarora.dualclone.data.repository.ProfileRepositoryImpl
 import com.mohitarora.dualclone.data.repository.Reconciler
@@ -134,6 +136,17 @@ object DataModule {
         settings: AppSettings,
         clock: Clock
     ): Reconciler = Reconciler(catalog, profiles, clones, appOps, presets, settings, clock)
+
+    @Provides @Singleton
+    fun provideSamsungAgentGuard(gateway: ShizukuGateway, audit: CommandAudit): SamsungAgentGuard = SamsungAgentGuard(gateway, audit)
+
+    @Provides @Singleton
+    fun provideBootRestorer(
+        reconciler: Reconciler,
+        clones: CloneRepository,
+        profiles: ProfileRepository,
+        settings: AppSettings
+    ): BootRestorer = BootRestorer({ reconciler.run() }, clones, profiles, settings)
 
     @Provides @Singleton
     fun provideDualMessengerSetup(gateway: ShizukuGateway, audit: CommandAudit, profiles: ProfileRepository): DualMessengerSetup =

@@ -8,6 +8,7 @@ import com.mohitarora.dualclone.domain.model.ListResult
 import com.mohitarora.dualclone.domain.model.OpResult
 import com.mohitarora.dualclone.domain.model.PmErrorCode
 import com.mohitarora.dualclone.domain.model.ProfileKind
+import com.mohitarora.dualclone.domain.model.RestoreResult
 import com.mohitarora.dualclone.domain.model.SamsungLauncher
 import com.mohitarora.dualclone.domain.model.StoredClone
 import com.mohitarora.dualclone.domain.pm.ParsedUser
@@ -126,6 +127,7 @@ class CloneStateRepository(
                 else -> prior[pkg]?.origin?.takeIf { it != CloneOriginKind.SYSTEM && it != CloneOriginKind.PROFILE_OWNER } ?: CloneOriginKind.EXTERNAL
             }
             val probed = probeAmbiguous(userId, installed, prior.keys)
+            val vanished = vanishedClones(userId, prior, installed, probed.keys)
             var applied = false
             lock(userId).withLock {
                 if (generation(userId).get() == startGeneration) {
@@ -134,6 +136,9 @@ class CloneStateRepository(
                         StoredClone(pkg, userId, CloneState.INSTALLED, originOf(pkg), now)
                     } + probed.map { (pkg, state) ->
                         StoredClone(pkg, userId, state, originOf(pkg), now)
+                    } + vanished.map { gone ->
+                        // NOTE: verifiedAtMillis of a LOST row is the moment the loss was first noticed, so a restore can tell a boot time removal from an older one.
+                        StoredClone(gone.packageName, userId, CloneState.LOST, CloneOriginKind.DUALCLONE, if (gone.state == CloneState.LOST) gone.verifiedAtMillis else now)
                     }
                     store.replace(userId, entries)
                     applied = true
@@ -147,6 +152,23 @@ class CloneStateRepository(
         }
         // NOTE: Operations kept changing state during every attempt, so the store already holds the newest facts.
         return ListResult.Loaded(store.load(userId).count { it.value.state == CloneState.INSTALLED })
+    }
+
+    /**
+     * Clones that DualClone created and that are gone while the original app is still installed in User 0.
+     * Samsung's Dual App agent deletes launchable apps from the Dual Messenger profile at boot unless they are whitelisted or were installed through adb.
+     * Only Dual Messenger is tracked because work profile managers remove apps on purpose and a missing original means a deliberate uninstall.
+     */
+    private suspend fun vanishedClones(userId: Int, prior: Map<String, StoredClone>, installed: Set<String>, probed: Set<String>): List<StoredClone> {
+        if (kindOf(userId) != ProfileKind.DUAL_MESSENGER) return emptyList()
+        val missing = prior.values.filter {
+            it.origin == CloneOriginKind.DUALCLONE &&
+                (it.state == CloneState.INSTALLED || it.state == CloneState.LOST) &&
+                it.packageName !in installed && it.packageName !in probed
+        }
+        if (missing.isEmpty()) return emptyList()
+        val hostNow = hostPackages.snapshot()
+        return missing.filter { it.packageName in hostNow }
     }
 
     private suspend fun listPackages(userId: Int, includeUninstalled: Boolean, systemOnly: Boolean = false): ListResult<Set<String>> {
@@ -247,6 +269,22 @@ class CloneStateRepository(
             }
             OpResult.Success(verified = verify == Verification.ABSENT)
         }
+    }
+
+    override suspend fun restoreLost(userId: Int, lostSinceMillis: Long): RestoreResult {
+        val wanted = store.load(userId).values
+            .filter { it.state == CloneState.LOST && it.verifiedAtMillis >= lostSinceMillis }
+            .map { it.packageName }
+        val restored = ArrayList<String>()
+        val failed = ArrayList<String>()
+        for (pkg in wanted) {
+            when (clone(pkg, userId)) {
+                is OpResult.Success -> restored.add(pkg)
+                is OpResult.ShizukuUnavailable -> return RestoreResult(restored, failed, shizukuUnavailable = true)
+                is OpResult.Failure -> failed.add(pkg)
+            }
+        }
+        return RestoreResult(restored, failed)
     }
 
     override suspend fun cloneAll(packageNames: List<String>, userId: Int): List<BulkItemResult> =

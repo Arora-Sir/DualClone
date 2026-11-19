@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LayersClear
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.SaveAlt
@@ -85,6 +86,29 @@ fun DataSection(
                     icon = Icons.Default.Refresh,
                     checked = state.autoRefreshLauncher,
                     onCheckedChange = change
+                )
+            }
+        }
+        actions.onAutoRestoreClonesChange?.let { change ->
+            add {
+                DcSwitchRow(
+                    title = stringResource(R.string.data_auto_restore_title),
+                    subtitle = stringResource(R.string.data_auto_restore_summary),
+                    icon = Icons.Default.Refresh,
+                    checked = state.autoRestoreClones,
+                    onCheckedChange = change
+                )
+            }
+        }
+        val agentChange = actions.onAgentDisabledChange
+        if (agentChange != null && state.agentDisabled != null) {
+            add {
+                DcSwitchRow(
+                    title = stringResource(R.string.data_keep_clones_title),
+                    subtitle = stringResource(R.string.data_keep_clones_summary),
+                    icon = Icons.Default.Lock,
+                    checked = state.agentDisabled,
+                    onCheckedChange = agentChange
                 )
             }
         }

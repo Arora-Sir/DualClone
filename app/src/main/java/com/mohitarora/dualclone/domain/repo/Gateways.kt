@@ -5,6 +5,7 @@ import com.mohitarora.dualclone.domain.model.CloneEntry
 import com.mohitarora.dualclone.domain.model.ListResult
 import com.mohitarora.dualclone.domain.model.OpResult
 import com.mohitarora.dualclone.domain.model.Profile
+import com.mohitarora.dualclone.domain.model.RestoreResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -30,6 +31,9 @@ interface CloneRepository {
     suspend fun cloneAll(packageNames: List<String>, userId: Int): List<BulkItemResult>
     suspend fun removeAll(packageNames: List<String>, userId: Int): List<BulkItemResult>
     suspend fun refreshLauncher(): Boolean
+
+    /** Re-installs clones that the system removed. Only clones first noticed missing at or after [lostSinceMillis] are restored. */
+    suspend fun restoreLost(userId: Int, lostSinceMillis: Long = 0L): RestoreResult
 }
 
 interface AppOpsRepository {

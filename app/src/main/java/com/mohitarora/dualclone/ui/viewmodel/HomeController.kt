@@ -155,6 +155,7 @@ class HomeController(
             isSelectedProfilePaused = profile?.isPaused == true,
             showLauncherRefreshHint = base.platform.hint,
             hostCopyUserIds = counts.third,
+            lostCloneCount = base.clones.values.count { it.state == CloneState.LOST && it.hostInstalled },
             operatingPackages = base.transient.operating,
             activeAppOpsPackage = sheet.first, activeAppOpsState = sheet.second,
             bulkSummary = base.transient.summary, lastReconcile = sheet.third
@@ -368,6 +369,15 @@ class HomeController(
             val pkg = clones.hostCopies().first().firstOrNull { it.first == userId }?.second ?: return@launch
             val result = clones.remove(pkg, userId)
             events.send(UiEvent(if (result is OpResult.Success) Messages.plain("Removed DualClone from the profile") else Messages.failure("Removing DualClone", result)))
+        }
+    }
+
+    /** Re-installs the clones of the selected profile that the system removed. App data is gone, so the apps start empty. */
+    fun restoreLostClones() {
+        val profile = profiles.selected.value ?: return
+        scope.launch {
+            val result = clones.restoreLost(profile.userId)
+            events.send(UiEvent(Messages.lostClonesRestored(result.restored.size, result.failed.size, result.shizukuUnavailable)))
         }
     }
 

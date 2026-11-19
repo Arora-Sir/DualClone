@@ -27,6 +27,13 @@ data class StoredClone(
         CloneEntry(packageName, userId, state, verifiedAtMillis, hostInstalled, isSystemInProfile = origin == CloneOriginKind.SYSTEM, isProfileOwner = origin == CloneOriginKind.PROFILE_OWNER)
 }
 
+/** Outcome of re-installing clones that the system removed. [shizukuUnavailable] stops the run early so it can be retried. */
+data class RestoreResult(
+    val restored: List<String> = emptyList(),
+    val failed: List<String> = emptyList(),
+    val shizukuUnavailable: Boolean = false
+)
+
 /** A package in a secondary profile that has no host app in User 0. */
 data class OrphanEntry(
     val packageName: String,

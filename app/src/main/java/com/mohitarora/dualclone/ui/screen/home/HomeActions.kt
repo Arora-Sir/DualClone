@@ -33,5 +33,6 @@ class HomeActions(
     val onRequestShizukuPermission: () -> Unit,
     val onRefreshShizuku: () -> Unit,
     val onEventAction: (String) -> Unit = {},
-    val onResume: () -> Unit = {}
+    val onResume: () -> Unit = {},
+    val onRestoreLost: () -> Unit = {}
 )

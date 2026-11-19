@@ -112,6 +112,10 @@
     <string name="data_refresh_launcher_summary">Restarts the home screen to clear stale icons</string>
     <string name="data_auto_refresh_title">Refresh Home Launcher after Clone removal</string>
     <string name="data_auto_refresh_summary">Clears ghost icons left on Samsung One UI Home after removing a clone from a work profile</string>
+    <string name="data_auto_restore_title">Restore clones removed at boot</string>
+    <string name="data_auto_restore_summary">Samsung\'s Dual App agent can remove Dual Messenger clones after a reboot. This re-installs them shortly after boot, without their data</string>
+    <string name="data_keep_clones_title">Keep clones through reboot (advanced)</string>
+    <string name="data_keep_clones_summary">Switches Samsung\'s Dual App agent off so it cannot delete Dual Messenger clones at boot. The Samsung Dual Messenger settings and its app list sync may stop working while it is off. Turn it back on at any time</string>
     <string name="data_audit_title">Command audit log</string>
     <string name="data_audit_summary">View every Shizuku command DualClone ran</string>
     <string name="data_audit_clear_title">Clear command audit log</string>
@@ -229,6 +233,12 @@
     <string name="banner_host_copy_title">DualClone is installed in a profile</string>
     <string name="banner_host_copy_body">A copy of DualClone exists in user %1$d. Remove it to avoid launcher clutter.</string>
     <string name="banner_host_copy_action">Remove copy</string>
+    <string name="banner_lost_title">Clones were removed by the system</string>
+    <plurals name="banner_lost_body">
+        <item quantity="one">The system removed %1$d clone while the original app is still installed. Restore it to get the icon back. The app starts empty because its data is deleted with it.</item>
+        <item quantity="other">The system removed %1$d clones while the original apps are still installed. Restore them to get the icons back. The apps start empty because their data is deleted with them.</item>
+    </plurals>
+    <string name="banner_lost_action">Restore</string>
     <string name="banner_stale_title">Clone list may be out of date</string>
     <string name="banner_stale_body">The last profile scan failed, so the list shows the previous result.</string>
     <string name="banner_launcher_title">Home screen may still show icons</string>

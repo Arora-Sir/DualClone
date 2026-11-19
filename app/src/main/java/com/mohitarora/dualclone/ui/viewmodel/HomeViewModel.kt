@@ -58,6 +58,7 @@ class HomeViewModel @Inject constructor(
     fun dismissLauncherHint() = controller.dismissLauncherHint()
     fun onEventAction(actionId: String) = controller.onEventAction(actionId)
     fun repairHostCopy(userId: Int) = controller.repairHostCopy(userId)
+    fun restoreLostClones() = controller.restoreLostClones()
     fun openAppOpsSheet(packageName: String) = controller.openAppOpsSheet(packageName)
     fun closeAppOpsSheet() = controller.closeAppOpsSheet()
     fun toggleAppOp(op: String, allow: Boolean) = controller.toggleAppOp(op, allow)
